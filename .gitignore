@@ -1,2 +1,9 @@
 node_modules
 
+dist/*
+
+!dist/builtin
+
+!dist/demo_assets
+
+!dist/hw3_assets
