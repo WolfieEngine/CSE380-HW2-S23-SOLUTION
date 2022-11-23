@@ -91,7 +91,7 @@ export default class TilemapRenderer {
         let top = imagePosition.y;
 
         // Calculate the position in the world to render the tile
-        let worldPosition = this.getIsometricTileDrawPos(tilemap, tileset, tilemapCol, tilemapRow);
+        let worldPosition = tilemap.getWorldPosition(tilemapCol, tilemapRow);
 
         let worldX = Math.floor((worldPosition.x - origin.x)*zoom);
         let worldY = Math.floor((worldPosition.y - origin.y)*zoom);

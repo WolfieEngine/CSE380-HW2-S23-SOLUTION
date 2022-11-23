@@ -1,6 +1,6 @@
 import Recording from "./Recording";
 import LogItem from "./LogItem";
-import Updateable from "../../Interfaces/Updateable";
+import Updateable from "../Interfaces/Updateable";
 
 /**
  * An interface that defines a set of methods to be exposed by a Recorder type.

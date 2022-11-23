@@ -1,4 +1,4 @@
-import Updateable from "../../Interfaces/Updateable";
+import Updateable from "../Interfaces/Updateable";
 import LogItem from "./LogItem";
 import Recording from "./Recording";
 

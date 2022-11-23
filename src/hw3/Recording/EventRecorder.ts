@@ -1,24 +1,23 @@
-import Receiver from "../Events/Receiver";
-import Updateable from "../DataTypes/Interfaces/Updateable";
-import { GameEventType } from "../Events/GameEventType";
-import Recorder from "../DataTypes/Playback/Interfaces/Recorder";
+import Receiver from "../../Wolfie2D/Events/Receiver";
+import { GameEventType } from "../../Wolfie2D/Events/GameEventType";
+import Recorder from "../../Wolfie2D/DataTypes/Playback/Recorder";
 import EventRecording from "./EventRecording";
 import EventLogItem from "./EventLogItem";
-import AbstractRecorder from "../DataTypes/Playback/Abstract/AbstractRecorder";
 
 
 // @ignorePage
 
-export default class EventRecorder extends AbstractRecorder<EventRecording, EventLogItem> {
+export default class EventRecorder implements Recorder<EventRecording, EventLogItem> {
+	private _active: boolean;
 	private _receiver: Receiver;
 	private _frame: number;
 	private _recording: EventRecording;
 
 	constructor(){
-		super();
 		this._receiver = new Receiver();
 		this._frame = 0;
 		this._recording = null;
+		this._active = false;
 
 		this._receiver.subscribe(
 			[GameEventType.MOUSE_DOWN, GameEventType.MOUSE_UP, GameEventType.MOUSE_MOVE, 
@@ -38,13 +37,17 @@ export default class EventRecorder extends AbstractRecorder<EventRecording, Even
 		}
 	}
 
-	public override start(recording: EventRecording): void {
+	public start(recording: EventRecording): void {
 		this._active = true;
 		this._frame = 0;
 		this._recording = recording;
 	}
 
-	public override stop(): void {
+	public stop(): void {
 		this._active = false;
+	}
+
+	public active(): boolean {
+		return this._active;
 	}
 }

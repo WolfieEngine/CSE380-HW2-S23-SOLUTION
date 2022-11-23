@@ -1,19 +1,18 @@
-import EventQueue from "../Events/EventQueue";
-import { GameEventType } from "../Events/GameEventType";
-import Updateable from "../DataTypes/Interfaces/Updateable";
+import EventQueue from "../../Wolfie2D/Events/EventQueue";
+import { GameEventType } from "../../Wolfie2D/Events/GameEventType";
+import Updateable from "../../Wolfie2D/DataTypes/Interfaces/Updateable";
 import Recording from "./EventRecording";
-import Emitter from "../Events/Emitter";
-import { InputHandlers } from "../Input/InputHandler";
-import RandUtils from "../Utils/RandUtils";
-import Replayer from "../DataTypes/Playback/Interfaces/Replayer";
+import Emitter from "../../Wolfie2D/Events/Emitter";
+import { InputHandlers } from "../../Wolfie2D/Input/InputHandler";
+import Replayer from "../../Wolfie2D/DataTypes/Playback/Replayer";
 import EventRecording from "./EventRecording";
-import AbstractReplayer from "../DataTypes/Playback/Abstract/AbstractReplayer";
 import EventLogItem from "./EventLogItem";
 
-export default class EventReplayer extends AbstractReplayer<EventRecording, EventLogItem> {
+export default class EventReplayer implements Replayer<EventRecording, EventLogItem> {
     private eventQueue: EventQueue;
     private emitter: Emitter;
 
+    private _active: boolean;
     private _frame: number;
     private _count: number;
 
@@ -21,18 +20,21 @@ export default class EventReplayer extends AbstractReplayer<EventRecording, Even
     private onEnd: () => void;
 
     public constructor() {
-        super();
         this.eventQueue = EventQueue.getInstance();
         this.emitter = new Emitter();
-        
         this._frame = 0;
         this._count = 0;
+        this._active = false;
     }
 
-    public override update(deltaT: number): void {
+    public active(): boolean {
+        return this._active;
+    }
+
+    public update(deltaT: number): void {
         if (this._active) {
 
-            while(this._count < this.recording.size() && this.recording.peek().frame * this.recording.peek().deltaT < this._frame * deltaT){
+            while(this._count < this.recording.getSize() && this.recording.peekNext().frame * this.recording.peekNext().deltaT < this._frame * deltaT){
                 let logItem = this.recording.dequeue();
                 // Add the LogItem event to the EventQueue
                 this.eventQueue.addEvent(logItem.event);
@@ -41,7 +43,7 @@ export default class EventReplayer extends AbstractReplayer<EventRecording, Even
             }
     
             // If we've iterated through the entire recording - end the replay
-            if (this._count >= this.recording.size()) {
+            if (this._count >= this.recording.getSize()) {
                 this.stop();
             }
 
@@ -49,7 +51,7 @@ export default class EventReplayer extends AbstractReplayer<EventRecording, Even
         }
     }
 
-    public override start(recording: EventRecording, onEnd: () => void = null): void {
+    public start(recording: EventRecording, onEnd: () => void = null): void {
         // Clear any info about previous replay
         this._frame = 0;
         this._count = 0;
@@ -69,7 +71,7 @@ export default class EventReplayer extends AbstractReplayer<EventRecording, Even
     
     }
     
-    public override stop(): void {
+    public stop(): void {
         this._active = false;
         this.onEnd();
         this.emitter.fireEvent(GameEventType.ENABLE_USER_INPUT, {inputs: [

@@ -107,7 +107,7 @@ export default class Scene implements Updateable {
         this.viewport.setBounds(0, 0, 2560, 1280);
         this.running = false;
         this.sceneManager = sceneManager;
-        this.receiver = new Receiver();
+        this.receiver = new Receiver("Scene Reciever");
         this.emitter = new Emitter();
 
         this.tilemaps = new Array();

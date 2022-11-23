@@ -1,9 +1,9 @@
-import Collection from "../Interfaces/Collection";
+import Queue from "../Interfaces/Queue";
 
 /**
  * A FIFO queue with elements of type T
  */
-export default class Queue<T> implements Collection {
+export default class ArrayQueue<T> implements Queue<T> {
     /** The maximum number of elements in the Queue */
     private readonly MAX_ELEMENTS: number;
 

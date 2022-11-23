@@ -3,20 +3,20 @@ import GameEvent from "../Events/GameEvent";
 import { GameEventType } from "../Events/GameEventType";
 import Receiver from "../Events/Receiver";
 
-import AbstractReplayer from "../DataTypes/Playback/Abstract/AbstractReplayer";
-import AbstractLogItem from "../DataTypes/Playback/Abstract/AbstractLogItem";
-import AbstractRecording from "../DataTypes/Playback/Abstract/AbstractRecording";
-import AbstractRecorder from "../DataTypes/Playback/Abstract/AbstractRecorder";
+import LogItem from "../DataTypes/Playback/LogItem";
+import Recorder from "../DataTypes/Playback/Recorder";
+import Recording from "../DataTypes/Playback/Recording";
+import Replayer from "../DataTypes/Playback/Replayer";
 
 export default class PlaybackManager implements Updateable {
 
-    protected recorder: AbstractRecorder<AbstractRecording<AbstractLogItem>, AbstractLogItem>;
+    protected recorder: Recorder<Recording<LogItem>, LogItem>;
     protected recording: boolean;
 
-    protected replayer: AbstractReplayer<AbstractRecording<AbstractLogItem>, AbstractLogItem>;
+    protected replayer: Replayer<Recording<LogItem>, LogItem>;
     protected playing: boolean;
 
-    protected lastRecording: AbstractRecording<AbstractLogItem>;
+    protected lastRecording: Recording<LogItem>;
 
     protected receiver: Receiver;
 
@@ -63,7 +63,7 @@ export default class PlaybackManager implements Updateable {
         let recording = event.data.get("recording");
         if (!this.playing && !this.recording && recording !== undefined) {
             this.lastRecording = recording;
-            let Recorder: new (...args: any[]) => AbstractRecorder<AbstractRecording<AbstractLogItem>, AbstractLogItem> = this.lastRecording.recorder();
+            let Recorder: new (...args: any[]) => Recorder<Recording<LogItem>, LogItem> = this.lastRecording.recorder();
             if (this.recorder === undefined || this.recorder.constructor !== Recorder) {
                 this.recorder = new Recorder();
             }
@@ -77,7 +77,7 @@ export default class PlaybackManager implements Updateable {
     }
     protected handlePlayRecordingEvent(event: GameEvent): void {
         if (!this.recording && this.lastRecording !== undefined) {
-            let Replayer: new (...args: any[]) => AbstractReplayer<AbstractRecording<AbstractLogItem>, AbstractLogItem> = this.lastRecording.replayer();
+            let Replayer: new (...args: any[]) => Replayer<Recording<LogItem>, LogItem> = this.lastRecording.replayer();
             if (this.replayer === undefined || this.replayer.constructor !== Replayer) {
                 this.replayer = new Replayer();
             }

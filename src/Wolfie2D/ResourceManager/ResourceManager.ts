@@ -1,5 +1,5 @@
 import Map from "../DataTypes/Collections/Map";
-import Queue from "../DataTypes/Collections/Queue";
+import Queue from "../DataTypes/Collections/ArrayQueue";
 import { TiledTilemapData } from "../DataTypes/Tilesets/TiledData";
 import StringUtils from "../Utils/StringUtils";
 import AudioManager from "../Sound/AudioManager";

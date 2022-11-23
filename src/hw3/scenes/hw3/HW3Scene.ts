@@ -30,7 +30,7 @@ import LaserShaderType from "../../shaders/LaserShaderType";
 
 import { HW3Layers, HW3Sprites, HW3Events } from "./HW3Enums";
 import { GameEventType } from "../../../Wolfie2D/Events/GameEventType";
-import EventRecording from "../../../Wolfie2D/Playback/EventRecording";
+import EventRecording from "../../Recording/EventRecording";
 
 /**
  * This is the main scene for our game. It does a lot of stuff.
@@ -133,7 +133,7 @@ export default class HW3Scene extends Scene {
 		// Set the seed
 		RandUtils.seed = this.opts.seed;
 		// Start Recording
-		this.emitter.fireEvent(GameEventType.START_RECORDING, {recording: new EventRecording(HW3Scene, {seed: this.opts.seed}, 1000)});
+		this.emitter.fireEvent(GameEventType.START_RECORDING, {recording: new EventRecording(HW3Scene, {seed: this.opts.seed})});
 	}
 	/**
 	 * @see Scene.updateScene 
