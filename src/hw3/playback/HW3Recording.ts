@@ -1,41 +1,82 @@
 import Scene from "../../Wolfie2D/Scene/Scene";
-import EventLogItem from "./EventLogItem";
-import EventRecorder from "./EventRecorder";
-import EventReplayer from "./EventReplayer";
 import Recording from "../../Wolfie2D/DataTypes/Playback/Recording";
 import Queue from "../../Wolfie2D/DataTypes/Interfaces/Queue";
 
+import HW3Recorder from "./HW3Recorder";
+import HW3Replayer from "./HW3Replayer";
+import HW3LogItem from "./HW3LogItem";
+
 /**
- * A class representing a recording of a slice of a game.
+ * A data structure used to maintain the HW3 recording.
  */
-export default class EventRecording implements Recording<EventLogItem>, Queue<EventLogItem> {
+export default class HW3Recording implements Recording<HW3LogItem>, Queue<HW3LogItem> {
 
     /** The initial scene that the recording starts from. */
     private _scene: new (...args: any) => Scene;
     /** The state of the initial scene that the recording starts from. */
     private _init: Record<string, any>;
+
     /** The sentinal node */
-    private _sent: EventLogItem;
+    private _sent: HW3LogItem;
     /** The number of items in the recording */
     private _size: number;
 
+    /** A recorder object that can record this type of recording */
+    private _recorder: HW3Recorder;
+    /** A replayer object that can replay this type of recording */
+    private _replayer: HW3Replayer;
 
+
+    /**
+     * @param scene the scene the recording should start at
+     * @param init any initialization data for the scene
+     */
     public constructor(scene: new (...args: any) => Scene, init: Record<string, any> = {}) {
         this._scene = scene;
         this._init = init;
 
-        this._sent = new EventLogItem(-1, -1, null);
+        this._sent = new HW3LogItem(-1, -1, null);
         this.sent.next = this.sent;
         this.sent.prev = this.sent;
-
         this.size = 0;
+
+        this._recorder = new HW3Recorder();
+        this._replayer = new HW3Replayer();
+    }
+
+    /**
+     * @returns a recorder object that can be used to record this type of recording
+     */
+    public recorder(): HW3Recorder { return this._recorder; }
+
+    /** 
+     * @returns a replayer object that can be used to replay this type of recording
+     */
+    public replayer(): HW3Replayer { return this._replayer; }
+    
+    /**
+     * @returns the scene the recording should start at
+     */
+    public scene(): new (...args: any) => Scene { return this._scene; }
+
+    /** 
+     * @returns the initialization options that should be passed to the scenes initial recording
+     */
+    public init(): Record<string, any> { return this._init; }
+
+    /** 
+     * Destroy the HW3Recording
+     */
+    public destroy(): void {
+        this._recorder.destroy();
+        this._replayer.destroy();
     }
 
     /**
      * Adds an item to the back of the queue
      * @param item The item to add to the back of the queue
      */
-    enqueue(item: EventLogItem): void {
+    public enqueue(item: HW3LogItem): void {
         item.next = this.sent;
         item.prev = this.sent.prev;
         this.sent.prev.next = item;
@@ -47,12 +88,12 @@ export default class EventRecording implements Recording<EventLogItem>, Queue<Ev
      * Retrieves an item from the front of the queue
      * @returns The item at the front of the queue
      */
-    dequeue(): EventLogItem | null { 
+    public dequeue(): HW3LogItem | null { 
         if (!this.hasItems()) {
             return null;
         }
 
-        let item: EventLogItem = this.sent.next;
+        let item: HW3LogItem = this.sent.next;
         this.sent.next = this.sent.next.next;
         this.sent.next.prev = this.sent;
         this.size -= 1;
@@ -63,7 +104,7 @@ export default class EventRecording implements Recording<EventLogItem>, Queue<Ev
      * Returns the item at the front of the queue, but does not remove it
      * @returns The item at the front of the queue; if the list is empty returns null.
      */
-    peekNext(): EventLogItem | null { 
+    public peekNext(): HW3LogItem | null { 
         if (!this.hasItems()) {
             return null;
         }
@@ -74,7 +115,7 @@ export default class EventRecording implements Recording<EventLogItem>, Queue<Ev
      * Returns true if the queue has items in it, false otherwise
      * @returns A boolean representing whether or not this queue has items
      */
-    hasItems(): boolean { 
+    public hasItems(): boolean { 
         return this.size > 0;
      }
 
@@ -82,13 +123,13 @@ export default class EventRecording implements Recording<EventLogItem>, Queue<Ev
      * Returns the number of elements in the queue.
      * @returns The size of the queue
      */
-    getSize(): number { return this.size; }
+    public getSize(): number { return this.size; }
 
     /**
      * Iterates through all of the items in this data structure.
      * @param func The function to evaluate of every item in the collection
      */
-    forEach(func: (item: EventLogItem, index?: number) => void): void {
+    public forEach(func: (item: HW3LogItem, index?: number) => void): void {
         let next = this.sent.next;
         let index = 0;
         while(next !== this.sent) {
@@ -100,19 +141,16 @@ export default class EventRecording implements Recording<EventLogItem>, Queue<Ev
     /**
      * Clears the contents of the data structure
      */
-    clear(): void {
+    public clear(): void {
         this.sent.next = this.sent;
         this.sent.prev = this.sent;
         this.size = 0;
     }
 
-    public recorder(): new (...args: any[]) => EventRecorder { return EventRecorder; }
-    public replayer(): new (...args: any[]) => EventReplayer { return EventReplayer; }
-    
-    public scene(): new (...args: any) => Scene { return this._scene; }
-    public init(): Record<string, any> { return this._init; }
 
-    protected get sent(): EventLogItem { return this._sent; }
+    /** Protected getters and setters for workign with the size and sentinal node */
+
+    protected get sent(): HW3LogItem { return this._sent; }
     protected get size(): number { return this._size; }
     protected set size(size: number) { this._size = size; }
 

@@ -15,12 +15,12 @@ import Timer from "../../../Wolfie2D/Timing/Timer";
 import Circle from "../../../Wolfie2D/DataTypes/Shapes/Circle";
 import MathUtils from "../../../Wolfie2D/Utils/MathUtils";
 
-import PlayerController from "../../AI/player/PlayerController";
-import { PlayerEvent, PlayerAnimation } from "../../AI/player/PlayerControllerEnums";
+import PlayerController from "../../ai/player/PlayerController";
+import { PlayerEvent, PlayerAnimation } from "../../ai/player/PlayerControllerEnums";
 
-import MineBehavior from "../../AI/mine/MineBehavior";
-import BubbleAI from "../../AI/bubble/BubbleBehavior";
-import LaserBehavior, { LaserEvents } from "../../AI/laser/LaserBehavior";
+import MineBehavior from "../../ai/mine/MineBehavior";
+import BubbleAI from "../../ai/bubble/BubbleBehavior";
+import LaserBehavior, { LaserEvents } from "../../ai/laser/LaserBehavior";
 
 import GameOver from "../game_over/GameOver";
 import HW3SceneOptions from "./HW3SceneOptions";
@@ -30,10 +30,10 @@ import LaserShaderType from "../../shaders/LaserShaderType";
 
 import { HW3Layers, HW3Sprites, HW3Events } from "./HW3Enums";
 import { GameEventType } from "../../../Wolfie2D/Events/GameEventType";
-import EventRecording from "../../Recording/EventRecording";
+import EventRecording from "../../playback/HW3Recording";
 
 /**
- * This is the main scene for our game. It does a lot of stuff.
+ * This is the main scene for our game. 
  * @see Scene for more information about the Scene class and Scenes in Wolfie2D
  */
 export default class HW3Scene extends Scene {
@@ -68,12 +68,12 @@ export default class HW3Scene extends Scene {
 	private healthBar: Label;
 	private healthBarBg: Label;
 
-	// Rock spawn timer and spawn rate
+	// Timers for spawning rocks and bubbles
 	private mineSpawnTimer: Timer;
 	private bubbleSpawnTimer: Timer;
 	private gameOverTimer: Timer;
 
-	// Keeps track of mines destroyed, bubbles popped
+	// Keeps track of mines destroyed, bubbles popped, amount of time passed
 	private bubblesPopped: number = 0;
 	private minesDestroyed: number = 0;
 	private timePassed: number = 0;
@@ -132,8 +132,11 @@ export default class HW3Scene extends Scene {
 		this.receiver.subscribe(LaserEvents.FIRING);
 		// Set the seed
 		RandUtils.seed = this.opts.seed;
-		// Start Recording
-		this.emitter.fireEvent(GameEventType.START_RECORDING, {recording: new EventRecording(HW3Scene, {seed: this.opts.seed})});
+
+        if (this.opts.recording) {
+		    // Start Recording
+		    this.emitter.fireEvent(GameEventType.START_RECORDING, {recording: new EventRecording(HW3Scene, {seed: this.opts.seed, recording: false})});
+        }
 	}
 	/**
 	 * @see Scene.updateScene 
@@ -348,12 +351,16 @@ export default class HW3Scene extends Scene {
 		this.bubbles = new Array(this.opts.maxNumBubbles);
 		for (let i = 0; i < this.bubbles.length; i++) {
 			this.bubbles[i] = this.add.graphic(GraphicType.RECT, HW3Layers.PRIMARY, {position: new Vec2(0, 0), size: new Vec2(50, 50)});
+            
+            // Give the bubbles a custom shader
 			this.bubbles[i].useCustomShader(BubbleShaderType.KEY);
 			this.bubbles[i].visible = false;
 			this.bubbles[i].color = Color.BLUE;
 
+            // Give the bubbles AI
 			this.bubbles[i].addAI(BubbleAI, this.opts.bubbleBehaviorOptions);
 
+            // Give the bubbles a collider
 			let collider = new Circle(Vec2.ZERO, 25);
 			this.bubbles[i].setCollisionShape(collider);
 		}
@@ -363,10 +370,10 @@ export default class HW3Scene extends Scene {
 		for (let i = 0; i < this.mines.length; i++){
 			this.mines[i] = this.add.sprite(HW3Sprites.ROCK, HW3Layers.PRIMARY);
 
-			// Make our rock inactive by default
+			// Make our mine inactive by default
 			this.mines[i].visible = false;
 
-			// Assign them an rock ai
+			// Assign them mine ai
 			this.mines[i].addAI(MineBehavior, this.opts.mineBehaviorOptions);
 
 			this.mines[i].scale.set(0.3, 0.3);

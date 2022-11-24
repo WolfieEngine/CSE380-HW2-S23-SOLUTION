@@ -1,8 +1,8 @@
 import RandUtils from "../../../Wolfie2D/Utils/RandUtils";
-import { BubbleBehaviorOptions } from "../../AI/bubble/BubbleBehaviorOptions";
-import LaserBehaviorOptions from "../../AI/laser/LaserBehaviorOptions";
-import MineBehaviorOptions from "../../AI/mine/MineBehaviorOptions";
-import PlayerControllerOptions from "../../AI/player/PlayerControllerOptions";
+import { BubbleBehaviorOptions } from "../../ai/bubble/BubbleBehaviorOptions";
+import LaserBehaviorOptions from "../../ai/laser/LaserBehaviorOptions";
+import MineBehaviorOptions from "../../ai/mine/MineBehaviorOptions";
+import PlayerControllerOptions from "../../ai/player/PlayerControllerOptions";
 
 /**
  * A set of options to be passed to a HW3Scene
@@ -79,6 +79,9 @@ export default class HW3SceneOptions {
     /** The seed @defaultValue {@link RandUtils.randomSeed()} */
     seed: string = RandUtils.randomSeed();
 
+    /** Whether the scene should be recorded or not */
+    recording: boolean = false;
+
     /**
      * Attempts to parse a set of options to be passed to the HW3Scene.
      * 
@@ -148,6 +151,7 @@ export default class HW3SceneOptions {
 
         // Seed
         res.seed = opt.seed ? opt.seed : def.seed;
+        res.recording = opt.recording !== undefined ? opt.recording : def.recording
 
         return res;
     }

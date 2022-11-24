@@ -1,14 +1,16 @@
 import EventQueue from "../../Wolfie2D/Events/EventQueue";
 import { GameEventType } from "../../Wolfie2D/Events/GameEventType";
-import Updateable from "../../Wolfie2D/DataTypes/Interfaces/Updateable";
-import Recording from "./EventRecording";
 import Emitter from "../../Wolfie2D/Events/Emitter";
 import { InputHandlers } from "../../Wolfie2D/Input/InputHandler";
 import Replayer from "../../Wolfie2D/DataTypes/Playback/Replayer";
-import EventRecording from "./EventRecording";
-import EventLogItem from "./EventLogItem";
 
-export default class EventReplayer implements Replayer<EventRecording, EventLogItem> {
+
+import HW3Recording from "./HW3Recording";
+import HW3LogItem from "./HW3LogItem";
+import NullFunc from "../../Wolfie2D/DataTypes/Functions/NullFunc";
+
+
+export default class HW3Replayer implements Replayer<HW3Recording, HW3LogItem> {
     private eventQueue: EventQueue;
     private emitter: Emitter;
 
@@ -16,7 +18,7 @@ export default class EventReplayer implements Replayer<EventRecording, EventLogI
     private _frame: number;
     private _count: number;
 
-    private recording: Recording;
+    private recording: HW3Recording;
     private onEnd: () => void;
 
     public constructor() {
@@ -51,7 +53,13 @@ export default class EventReplayer implements Replayer<EventRecording, EventLogI
         }
     }
 
-    public start(recording: EventRecording, onEnd: () => void = null): void {
+    /**
+     * Starts replaying the HW3Scene.
+     * 
+     * @param recording the HW3Recording to start replaying
+     * @param onEnd an optional callback function that gets called when the replay stops
+     */
+    public start(recording: HW3Recording, onEnd: () => void = NullFunc): void {
         // Clear any info about previous replay
         this._frame = 0;
         this._count = 0;
@@ -70,7 +78,9 @@ export default class EventReplayer implements Replayer<EventRecording, EventLogI
         this.emitter.fireEvent(GameEventType.CHANGE_SCENE, {scene: this.recording.scene(), init: this.recording.init()});
     
     }
-    
+    /**
+     * @see HW3Replayer.stop()
+     */
     public stop(): void {
         this._active = false;
         this.onEnd();
@@ -80,4 +90,8 @@ export default class EventReplayer implements Replayer<EventRecording, EventLogI
             InputHandlers.ON_BLUR, InputHandlers.ON_WHEEL
         ]});
     }
+    /**
+     * @see Replayer.destroy()
+     */
+    public destroy(): void {}
 }

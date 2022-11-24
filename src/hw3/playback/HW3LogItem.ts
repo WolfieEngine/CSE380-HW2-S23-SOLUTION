@@ -1,7 +1,7 @@
 import LogItem from "../../Wolfie2D/DataTypes/Playback/LogItem";
 import GameEvent from "../../Wolfie2D/Events/GameEvent";
 
-export default class EventLogItem implements LogItem {
+export default class HW3LogItem implements LogItem {
 
 	/** The frame this LogItem was logged at */
 	protected _frame: number;
@@ -11,9 +11,9 @@ export default class EventLogItem implements LogItem {
 	protected _event: GameEvent;
 
 	/** The next LogItem */
-	protected _next: EventLogItem;
+	protected _next: HW3LogItem;
 	/** The previous LogItem */
-	protected _prev: EventLogItem;
+	protected _prev: HW3LogItem;
 
 	public constructor(frame: number, deltaT: number, event: GameEvent){
 		this.frame = frame;
@@ -32,9 +32,9 @@ export default class EventLogItem implements LogItem {
 	public get event(): GameEvent { return this._event; }
 	public set event(value: GameEvent) { this._event = value }
 
-	public get next(): EventLogItem { return this._next; }
-	public set next(next: EventLogItem) { this._next = next}
+	public get next(): HW3LogItem { return this._next; }
+	public set next(next: HW3LogItem) { this._next = next}
 
-	public get prev(): EventLogItem { return this._prev; }
-	public set prev(next: EventLogItem) { this._prev = next}
+	public get prev(): HW3LogItem { return this._prev; }
+	public set prev(next: HW3LogItem) { this._prev = next}
 }
