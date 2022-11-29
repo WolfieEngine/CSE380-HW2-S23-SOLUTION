@@ -266,7 +266,7 @@ As far as I know, there are two ways to do this. The first way involves hard-cod
 
 ### 4.2 - The Laser Shader
 The second shader you'll be working with is the shader for the submarine's laser beam. Inside of the `laser.fshader` file, you will find two functions in addition to the main method. 
-```
+```c
 /**
  *  This function generates the appropriate alpha value for the fragment color
  *  to render a laser that looks like a sine wave. The alpha value depends on 
