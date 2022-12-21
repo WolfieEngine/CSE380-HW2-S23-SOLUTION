@@ -1,5 +1,5 @@
-import EventLogItem from "../../../hw3/playback/HW3LogItem";
-import EventRecording from "../../../hw3/playback/HW3Recording"
+import EventLogItem from "../../../hw2/playback/HW3LogItem";
+import EventRecording from "../../../hw2/playback/HW3Recording"
 import Scene from "../../Scene/Scene"
 
 
