@@ -1,5 +1,4 @@
 import RandUtils from "../../../Wolfie2D/Utils/RandUtils";
-import { BubbleBehaviorOptions } from "../../ai/bubble/BubbleBehaviorOptions";
 import LaserBehaviorOptions from "../../ai/laser/LaserBehaviorOptions";
 import MineBehaviorOptions from "../../ai/mine/MineBehaviorOptions";
 import PlayerControllerOptions from "../../ai/player/PlayerControllerOptions";
@@ -15,9 +14,6 @@ export default class HW3SceneOptions {
 
     /** @see PlayerControllerOptions */
     playerControllerOptions: PlayerControllerOptions = new PlayerControllerOptions();
-
-    /** @see BubbleBehaviorOptions */
-    bubbleBehaviorOptions: BubbleBehaviorOptions = new BubbleBehaviorOptions();
 
     /** @see MineBehaviorOptions */
     mineBehaviorOptions: MineBehaviorOptions = new MineBehaviorOptions();
@@ -93,7 +89,6 @@ export default class HW3SceneOptions {
         if (!opt) return res;
 
         res.playerControllerOptions = PlayerControllerOptions.parseOptions(opt.playerControllerOptions, def.playerControllerOptions);
-        res.bubbleBehaviorOptions = BubbleBehaviorOptions.parseOptions(opt.bubbleBehaviorOptions);
         res.mineBehaviorOptions = MineBehaviorOptions.parseOptions(opt.mineBehaviorOptions, def.mineBehaviorOptions);
         res.laserBehaviorOptions = LaserBehaviorOptions.parseOptions(opt.laserBehaviorOptions, def.laserBehaviorOptions);
 

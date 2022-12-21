@@ -358,7 +358,7 @@ export default class HW3Scene extends Scene {
 			this.bubbles[i].color = Color.BLUE;
 
             // Give the bubbles AI
-			this.bubbles[i].addAI(BubbleAI, this.opts.bubbleBehaviorOptions);
+			this.bubbles[i].addAI(BubbleAI);
 
             // Give the bubbles a collider
 			let collider = new Circle(Vec2.ZERO, 25);
