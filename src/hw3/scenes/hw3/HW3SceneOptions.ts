@@ -1,5 +1,4 @@
 import RandUtils from "../../../Wolfie2D/Utils/RandUtils";
-import LaserBehaviorOptions from "../../ai/laser/LaserBehaviorOptions";
 import MineBehaviorOptions from "../../ai/mine/MineBehaviorOptions";
 import PlayerControllerOptions from "../../ai/player/PlayerControllerOptions";
 
@@ -17,9 +16,6 @@ export default class HW3SceneOptions {
 
     /** @see MineBehaviorOptions */
     mineBehaviorOptions: MineBehaviorOptions = new MineBehaviorOptions();
-
-    /** @see LaserBehaviorOptions */
-    laserBehaviorOptions: LaserBehaviorOptions = new LaserBehaviorOptions();
 
     /** The maximum number of mines in the scenes mine object pool @defaultValue 15 */
     maxNumMines: number = 15;
@@ -90,7 +86,6 @@ export default class HW3SceneOptions {
 
         res.playerControllerOptions = PlayerControllerOptions.parseOptions(opt.playerControllerOptions, def.playerControllerOptions);
         res.mineBehaviorOptions = MineBehaviorOptions.parseOptions(opt.mineBehaviorOptions, def.mineBehaviorOptions);
-        res.laserBehaviorOptions = LaserBehaviorOptions.parseOptions(opt.laserBehaviorOptions, def.laserBehaviorOptions);
 
         res.maxNumMines ? opt.maxNumMines : def.maxNumMines;
         res.maxNumBubbles ? opt.maxNumBubbles : def.maxNumBubbles;
