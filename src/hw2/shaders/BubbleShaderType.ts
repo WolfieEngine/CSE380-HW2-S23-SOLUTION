@@ -6,8 +6,8 @@ import RectShaderType from "../../Wolfie2D/Rendering/WebGLRendering/ShaderTypes/
 export default class BubbleShaderType extends RectShaderType {
 
 	public static KEY: string = "BUBBLE_SHADER_TYPE_KEY";
-	public static VSHADER: string = "hw3_assets/shaders/bubble.vshader";
-	public static FSHADER: string = "hw3_assets/shaders/bubble.fshader";
+	public static VSHADER: string = "hw2_assets/shaders/bubble.vshader";
+	public static FSHADER: string = "hw2_assets/shaders/bubble.fshader";
 
 	initBufferObject(): void {
 		this.bufferObjectKey = BubbleShaderType.KEY;

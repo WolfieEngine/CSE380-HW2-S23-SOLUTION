@@ -8,9 +8,9 @@ export default class LaserShaderType extends RectShaderType {
 	/** This is the key of the shader program for the LaserShaderType */
 	public static KEY: string = "LASER_SHADER_TYPE_KEY";
 	/** This is the path to the vertex shader for the LaserShaderType */
-	public static VSHADER: string = "./hw3_assets/shaders/laser.vshader";
+	public static VSHADER: string = "./hw2_assets/shaders/laser.vshader";
 	/** This is the path to the fragment shader for the LaserShaderType */
-	public static FSHADER: string = "./hw3_assets/shaders/laser.fshader";
+	public static FSHADER: string = "./hw2_assets/shaders/laser.fshader";
 
 	initBufferObject(): void {
 		this.bufferObjectKey = LaserShaderType.KEY;
