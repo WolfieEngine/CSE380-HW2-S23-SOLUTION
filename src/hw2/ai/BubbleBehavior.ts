@@ -1,10 +1,13 @@
-import AI from "../../../Wolfie2D/DataTypes/Interfaces/AI";
-import Vec2 from "../../../Wolfie2D/DataTypes/Vec2";
-import GameEvent from "../../../Wolfie2D/Events/GameEvent";
-import Graphic from "../../../Wolfie2D/Nodes/Graphic";
-import MathUtils from "../../../Wolfie2D/Utils/MathUtils";
+import AI from "../../Wolfie2D/DataTypes/Interfaces/AI";
+import Vec2 from "../../Wolfie2D/DataTypes/Vec2";
+import GameEvent from "../../Wolfie2D/Events/GameEvent";
+import Graphic from "../../Wolfie2D/Nodes/Graphic";
+import MathUtils from "../../Wolfie2D/Utils/MathUtils";
 
-
+/**
+ * A class that represents the behavior of the bubbles in the HW2Scene
+ * @author PeteyLumpkins
+ */
 export default class BubbleBehavior implements AI {
     // The GameNode that owns this behavior
     private owner: Graphic;

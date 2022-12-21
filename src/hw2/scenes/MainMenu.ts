@@ -1,15 +1,30 @@
-import Vec2 from "../../../Wolfie2D/DataTypes/Vec2";
-import { UIElementType } from "../../../Wolfie2D/Nodes/UIElements/UIElementTypes";
-import Layer from "../../../Wolfie2D/Scene/Layer";
-import Scene from "../../../Wolfie2D/Scene/Scene";
-import Color from "../../../Wolfie2D/Utils/Color";
-import Homework1_Scene from "../hw3/HW3Scene";
-import Label from "../../../Wolfie2D/Nodes/UIElements/Label";
-import GameEvent from "../../../Wolfie2D/Events/GameEvent";
+import Vec2 from "../../Wolfie2D/DataTypes/Vec2";
+import { UIElementType } from "../../Wolfie2D/Nodes/UIElements/UIElementTypes";
+import Layer from "../../Wolfie2D/Scene/Layer";
+import Scene from "../../Wolfie2D/Scene/Scene";
+import Color from "../../Wolfie2D/Utils/Color";
+import Homework1_Scene from "./HW2Scene";
+import Label from "../../Wolfie2D/Nodes/UIElements/Label";
+import GameEvent from "../../Wolfie2D/Events/GameEvent";
 
-import { MainMenuEvent, MainMenuLayer } from "./MainMenuEnums";
-import RandUtils from "../../../Wolfie2D/Utils/RandUtils";
-import { GameEventType } from "../../../Wolfie2D/Events/GameEventType";
+import RandUtils from "../../Wolfie2D/Utils/RandUtils";
+import { GameEventType } from "../../Wolfie2D/Events/GameEventType";
+
+// Layers in the main menu
+enum MainMenuLayer {
+    MAIN_MENU = "MAIN_MENU", 
+    CONTROLS = "CONTROLS",
+    ABOUT = "ABOUT"
+}
+
+// Events triggered in the main menu
+enum MainMenuEvent {
+    PLAY_GAME = "PLAY_GAME",
+	CONTROLS = "CONTROLS",
+	ABOUT = "ABOUT",
+	MENU = "MENU",
+    PLAY_RECORDING = "PLAY_RECORDING"
+}
 
 export default class MainMenu extends Scene {
     // Layers, for multiple main menu screens
@@ -20,8 +35,16 @@ export default class MainMenu extends Scene {
     public override startScene(){
         const center = this.viewport.getCenter();
 
-        // The main menu
+        // Main menu screen
         this.mainMenu = this.addUILayer(MainMenuLayer.MAIN_MENU);
+
+        // Controls screen
+        this.controls = this.addUILayer(MainMenuLayer.CONTROLS);
+        this.controls.setHidden(true);
+        // About screen
+
+        this.about = this.addUILayer(MainMenuLayer.ABOUT);
+        this.about.setHidden(true);
 
         // Add play button, and give it an event to emit on press
         const play = this.add.uiElement(UIElementType.BUTTON, MainMenuLayer.MAIN_MENU, {position: new Vec2(center.x, center.y - 100), text: "Play"});
@@ -54,9 +77,6 @@ export default class MainMenu extends Scene {
         playRecording.borderColor = Color.WHITE;
         playRecording.backgroundColor = Color.TRANSPARENT;
         playRecording.onClickEventId = MainMenuEvent.PLAY_RECORDING;
-        // Controls screen
-        this.controls = this.addUILayer(MainMenuLayer.CONTROLS);
-        this.controls.setHidden(true);
 
         const header = <Label>this.add.uiElement(UIElementType.LABEL, MainMenuLayer.CONTROLS, {position: new Vec2(center.x, center.y - 250), text: "Controls"});
         header.textColor = Color.WHITE;
@@ -78,10 +98,6 @@ export default class MainMenu extends Scene {
         back.borderColor = Color.WHITE;
         back.backgroundColor = Color.TRANSPARENT;
         back.onClickEventId = MainMenuEvent.MENU;
-
-        // About screen
-        this.about = this.addUILayer(MainMenuLayer.ABOUT);
-        this.about.setHidden(true);
 
         const aboutHeader = <Label>this.add.uiElement(UIElementType.LABEL, MainMenuLayer.ABOUT, {position: new Vec2(center.x, center.y - 250), text: "About"});
         aboutHeader.textColor = Color.WHITE;
@@ -148,8 +164,7 @@ export default class MainMenu extends Scene {
                 break;
             }
             default: {
-                console.warn(`Unhandled event caught in MainMenu: "${event.type}"`);
-                break;
+                throw new Error(`Unhandled event caught in MainMenu: "${event.type}"`);
             }
         }
     }

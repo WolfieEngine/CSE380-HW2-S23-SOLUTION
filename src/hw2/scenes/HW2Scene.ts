@@ -1,41 +1,62 @@
-import AABB from "../../../Wolfie2D/DataTypes/Shapes/AABB";
-import Vec2 from "../../../Wolfie2D/DataTypes/Vec2";
-import Graphic from "../../../Wolfie2D/Nodes/Graphic";
-import { GraphicType } from "../../../Wolfie2D/Nodes/Graphics/GraphicTypes";
-import AnimatedSprite from "../../../Wolfie2D/Nodes/Sprites/AnimatedSprite";
-import Label from "../../../Wolfie2D/Nodes/UIElements/Label";
-import { UIElementType } from "../../../Wolfie2D/Nodes/UIElements/UIElementTypes";
-import Scene from "../../../Wolfie2D/Scene/Scene";
-import Color from "../../../Wolfie2D/Utils/Color";
-import RandUtils from "../../../Wolfie2D/Utils/RandUtils";
-import Sprite from "../../../Wolfie2D/Nodes/Sprites/Sprite";
-import CanvasNode from "../../../Wolfie2D/Nodes/CanvasNode";
-import GameEvent from "../../../Wolfie2D/Events/GameEvent";
-import Timer from "../../../Wolfie2D/Timing/Timer";
-import Circle from "../../../Wolfie2D/DataTypes/Shapes/Circle";
-import MathUtils from "../../../Wolfie2D/Utils/MathUtils";
+import AABB from "../../Wolfie2D/DataTypes/Shapes/AABB";
+import Vec2 from "../../Wolfie2D/DataTypes/Vec2";
+import Graphic from "../../Wolfie2D/Nodes/Graphic";
+import { GraphicType } from "../../Wolfie2D/Nodes/Graphics/GraphicTypes";
+import AnimatedSprite from "../../Wolfie2D/Nodes/Sprites/AnimatedSprite";
+import Label from "../../Wolfie2D/Nodes/UIElements/Label";
+import { UIElementType } from "../../Wolfie2D/Nodes/UIElements/UIElementTypes";
+import Scene from "../../Wolfie2D/Scene/Scene";
+import Color from "../../Wolfie2D/Utils/Color";
+import RandUtils from "../../Wolfie2D/Utils/RandUtils";
+import Sprite from "../../Wolfie2D/Nodes/Sprites/Sprite";
+import CanvasNode from "../../Wolfie2D/Nodes/CanvasNode";
+import GameEvent from "../../Wolfie2D/Events/GameEvent";
+import Timer from "../../Wolfie2D/Timing/Timer";
+import Circle from "../../Wolfie2D/DataTypes/Shapes/Circle";
+import MathUtils from "../../Wolfie2D/Utils/MathUtils";
 
-import PlayerController from "../../ai/player/PlayerController";
-import { PlayerEvent, PlayerAnimation } from "../../ai/player/PlayerControllerEnums";
+import PlayerController from "../ai/PlayerController";
 
-import MineBehavior from "../../ai/mine/MineBehavior";
-import BubbleAI from "../../ai/bubble/BubbleBehavior";
-import LaserBehavior, { LaserEvents } from "../../ai/laser/LaserBehavior";
+import MineBehavior from "../ai/MineBehavior";
+import BubbleAI from "../ai/BubbleBehavior";
+import LaserBehavior from "../ai/LaserBehavior";
 
-import GameOver from "../game_over/GameOver";
+import GameOver from "./GameOver";
 
-import BubbleShaderType from "../../shaders/BubbleShaderType";
-import LaserShaderType from "../../shaders/LaserShaderType";
+import BubbleShaderType from "../shaders/BubbleShaderType";
+import LaserShaderType from "../shaders/LaserShaderType";
 
-import { HW3Layers, HW3Sprites, HW3Events } from "./HW3Enums";
-import { GameEventType } from "../../../Wolfie2D/Events/GameEventType";
-import EventRecording from "../../playback/HW3Recording";
+import { GameEventType } from "../../Wolfie2D/Events/GameEventType";
+import EventRecording from "../playback/HW3Recording";
+
+import { HW2Events } from "../HW2Events";
+
+/**
+ * An enum for the layers for a HW3Scene
+ */
+enum HW3Layers {
+	PRIMARY = "PRIMARY",
+	BACKGROUND = "BACKGROUND", 
+	UI = "UI"
+}
 
 /**
  * This is the main scene for our game. 
  * @see Scene for more information about the Scene class and Scenes in Wolfie2D
  */
-export default class HW3Scene extends Scene {
+export default class HW2Scene extends Scene {
+    // The key and path to the player's spritesheet json data
+    public static PLAYER_KEY: string = "PLAYER";
+    public static PLAYER_PATH = "hw2_assets/spritesheets/sub.json"
+    // The key and path to the mine sprite
+    public static MINE_KEY = "MINE"
+    public static MINE_PATH = "hw2_assets/sprites/SpikyMineThing.png"
+    // The key and path to the background sprite
+	public static BACKGROUND_KEY = "BACKGROUND"
+    public static BACKGROUND_PATH = "hw2_assets/sprites/WavyBlueLines.png"
+
+
+
     // A flag to indicate whether or not this scene is being recorded
     private recording: boolean;
     // The seed that should be set before the game starts
@@ -96,11 +117,11 @@ export default class HW3Scene extends Scene {
 	 */
 	public override loadScene(){
 		// Load in the submarine
-		this.load.spritesheet(HW3Sprites.PLAYER, "hw2_assets/spritesheets/sub.json");
+		this.load.spritesheet(HW2Scene.PLAYER_KEY, HW2Scene.PLAYER_PATH);
 		// Load in the background image
-		this.load.image(HW3Sprites.BACKGROUND, "hw2_assets/sprites/WavyBlueLines.png");
+		this.load.image(HW2Scene.BACKGROUND_KEY, HW2Scene.BACKGROUND_PATH);
 		// Load in the naval mine
-		this.load.image(HW3Sprites.MINE, "hw2_assets/sprites/SpikyMineThing.png");
+		this.load.image(HW2Scene.MINE_KEY, HW2Scene.MINE_PATH);
 	}
 	/**
 	 * @see Scene.startScene
@@ -124,14 +145,14 @@ export default class HW3Scene extends Scene {
 		this.initObjectPools();
 
 		// Subscribe to player events
-		this.receiver.subscribe(PlayerEvent.HEALTH_CHANGE);
-		this.receiver.subscribe(PlayerEvent.AIR_CHANGE);
-		this.receiver.subscribe(PlayerEvent.CHARGE_CHANGE);
-		this.receiver.subscribe(PlayerEvent.SHOOT_LASER);
-		this.receiver.subscribe(PlayerEvent.DEAD);
+		this.receiver.subscribe(HW2Events.HEALTH_CHANGE);
+		this.receiver.subscribe(HW2Events.AIR_CHANGE);
+		this.receiver.subscribe(HW2Events.CHARGE_CHANGE);
+		this.receiver.subscribe(HW2Events.SHOOT_LASER);
+		this.receiver.subscribe(HW2Events.DEAD);
 
 		// Subscribe to laser events
-		this.receiver.subscribe(LaserEvents.FIRING);
+		this.receiver.subscribe(HW2Events.FIRING_LASER);
 
 		// Set the seed in RandUtils to the seed for the game
 		RandUtils.seed = this.seed;
@@ -139,7 +160,7 @@ export default class HW3Scene extends Scene {
         // If we're recording - send a signal to the playback system to start recording
         if (this.recording) {
 		    // Send the start recording event
-		    this.emitter.fireEvent(GameEventType.START_RECORDING, {recording: new EventRecording(HW3Scene, {seed: this.seed, recording: false})});
+		    this.emitter.fireEvent(GameEventType.START_RECORDING, {recording: new EventRecording(HW2Scene, {seed: this.seed, recording: false})});
         }
 	}
 	/**
@@ -180,34 +201,33 @@ export default class HW3Scene extends Scene {
 	 */
 	protected handleEvent(event: GameEvent){
 		switch(event.type) {
-			case PlayerEvent.SHOOT_LASER: {
+			case HW2Events.SHOOT_LASER: {
 				this.spawnLaser(event.data.get("src"));
 				break;
 			}
-			case PlayerEvent.DEAD: {
+			case HW2Events.DEAD: {
 				this.player.setAIActive(false, {});
 				this.gameOverTimer.start();
 				break;
 			}
-			case PlayerEvent.HEALTH_CHANGE: {
+			case HW2Events.HEALTH_CHANGE: {
 				this.handleHealthChange(event.data.get("curhp"), event.data.get("maxhp"));
 				break;
 			}
-			case PlayerEvent.AIR_CHANGE: {
+			case HW2Events.AIR_CHANGE: {
 				this.handleAirChange(event.data.get("curair"), event.data.get("maxair"));
 				break;
 			}
-			case PlayerEvent.CHARGE_CHANGE: {
+			case HW2Events.CHARGE_CHANGE: {
 				this.handleChargeChange(event.data.get("curchrg"), event.data.get("maxchrg"));
 				break;
 			}
-			case LaserEvents.FIRING: {
+			case HW2Events.FIRING_LASER: {
 				this.minesDestroyed += this.handleMineLaserCollisions(event.data.get("laser"), this.mines);
 				break;
 			}
 			default: {
-				console.warn(`Unhandled event with type ${event.type} caught in ${this.constructor.name}`);
-				break;
+				throw new Error(`Unhandled event with type ${event.type} caught in ${this.constructor.name}`);
 			}
 		}
 
@@ -228,14 +248,11 @@ export default class HW3Scene extends Scene {
 	protected initPlayer(): void {
 		// Add in the player as an animated sprite
 		// We give it the key specified in our load function and the name of the layer
-		this.player = this.add.animatedSprite(HW3Sprites.PLAYER, HW3Layers.PRIMARY);
+		this.player = this.add.animatedSprite(HW2Scene.PLAYER_KEY, HW3Layers.PRIMARY);
 		
 		// Set the player's position to the middle of the screen, and scale it down
 		this.player.position.set(this.viewport.getCenter().x, this.viewport.getCenter().y);
 		this.player.scale.set(0.4, 0.4);
-
-		// Play the idle animation by default
-		this.player.animation.play(PlayerAnimation.IDLE);
 
 		// Give the player a smaller hitbox
 		let playerCollider = new AABB(Vec2.ZERO, this.player.sizeWithZoom);
@@ -321,11 +338,11 @@ export default class HW3Scene extends Scene {
 	 * Initializes the background image sprites for the game.
 	 */
 	protected initBackground(): void {
-		this.bg1 = this.add.sprite(HW3Sprites.BACKGROUND, HW3Layers.BACKGROUND);
+		this.bg1 = this.add.sprite(HW2Scene.BACKGROUND_KEY, HW3Layers.BACKGROUND);
 		this.bg1.scale.set(1.5, 1.5);
 		this.bg1.position.copy(this.viewport.getCenter());
 
-		this.bg2 = this.add.sprite(HW3Sprites.BACKGROUND, HW3Layers.BACKGROUND);
+		this.bg2 = this.add.sprite(HW2Scene.BACKGROUND_KEY, HW3Layers.BACKGROUND);
 		this.bg2.scale.set(1.5, 1.5);
 		this.bg2.position = this.bg1.position.clone();
 		this.bg2.position.add(this.bg1.sizeWithZoom.scale(2, 0));
@@ -372,7 +389,7 @@ export default class HW3Scene extends Scene {
 		// Init the object pool of mines
 		this.mines = new Array(15);
 		for (let i = 0; i < this.mines.length; i++){
-			this.mines[i] = this.add.sprite(HW3Sprites.MINE, HW3Layers.PRIMARY);
+			this.mines[i] = this.add.sprite(HW2Scene.MINE_KEY, HW3Layers.PRIMARY);
 
 			// Make our mine inactive by default
 			this.mines[i].visible = false;
@@ -696,9 +713,9 @@ export default class HW3Scene extends Scene {
 	public handleBubblePlayerCollisions(): number {
 		let collisions = 0;
 		for (let bubble of this.bubbles) {
-			if (bubble.visible && HW3Scene.checkAABBtoCircleCollision(<AABB>this.player.collisionShape, <Circle>bubble.collisionShape)){
+			if (bubble.visible && HW2Scene.checkAABBtoCircleCollision(<AABB>this.player.collisionShape, <Circle>bubble.collisionShape)){
 				bubble.visible = false;
-				this.emitter.fireEvent(HW3Events.PLAYER_BUBBLE_COLLISION, {});
+				this.emitter.fireEvent(HW2Events.PLAYER_BUBBLE_COLLISION);
 				collisions += 1;
 			}
 		}
@@ -727,7 +744,7 @@ export default class HW3Scene extends Scene {
 		for (let mine of this.mines) {
 			if (mine.visible && this.player.collisionShape.overlaps(mine.collisionShape)) {
 				mine.visible = false;
-				this.emitter.fireEvent(HW3Events.PLAYER_MINE_COLLISION, {});
+				this.emitter.fireEvent(HW2Events.PLAYER_MINE_COLLISION);
 				collisions += 1;
 			}
 		}	

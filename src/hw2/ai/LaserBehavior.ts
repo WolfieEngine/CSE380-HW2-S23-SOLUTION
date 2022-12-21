@@ -1,17 +1,12 @@
-import AI from "../../../Wolfie2D/DataTypes/Interfaces/AI";
-import AABB from "../../../Wolfie2D/DataTypes/Shapes/AABB";
-import Vec2 from "../../../Wolfie2D/DataTypes/Vec2";
-import Emitter from "../../../Wolfie2D/Events/Emitter";
-import GameEvent from "../../../Wolfie2D/Events/GameEvent";
-import Graphic from "../../../Wolfie2D/Nodes/Graphic";
-import MathUtils from "../../../Wolfie2D/Utils/MathUtils";
+import AI from "../../Wolfie2D/DataTypes/Interfaces/AI";
+import AABB from "../../Wolfie2D/DataTypes/Shapes/AABB";
+import Vec2 from "../../Wolfie2D/DataTypes/Vec2";
+import Emitter from "../../Wolfie2D/Events/Emitter";
+import GameEvent from "../../Wolfie2D/Events/GameEvent";
+import Graphic from "../../Wolfie2D/Nodes/Graphic";
+import MathUtils from "../../Wolfie2D/Utils/MathUtils";
 
-/**
- * Events that can be fired by a laser
- */
-export enum LaserEvents {
-    FIRING = "LASER_FIRING"
-}
+import { HW2Events } from "../HW2Events";
 
 /**
  * A class representing the behavior for a laser beam
@@ -90,7 +85,7 @@ export default class LaserBehavior implements AI {
 
             // If this is the first time the laser is fired - send the firing event.
             if (this.currentCharge === this.maxCharge) {
-                this.emitter.fireEvent(LaserEvents.FIRING, {laser: this.owner});
+                this.emitter.fireEvent(HW2Events.FIRING_LASER, {laser: this.owner});
             }
 
             // Update the value of the charge on the laser

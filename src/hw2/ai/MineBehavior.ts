@@ -1,7 +1,7 @@
-import AI from "../../../Wolfie2D/DataTypes/Interfaces/AI";
-import Vec2 from "../../../Wolfie2D/DataTypes/Vec2";
-import GameEvent from "../../../Wolfie2D/Events/GameEvent";
-import Graphic from "../../../Wolfie2D/Nodes/Graphic";
+import AI from "../../Wolfie2D/DataTypes/Interfaces/AI";
+import Vec2 from "../../Wolfie2D/DataTypes/Vec2";
+import GameEvent from "../../Wolfie2D/Events/GameEvent";
+import Graphic from "../../Wolfie2D/Nodes/Graphic";
 
 /**
  * A class that represents a set of behavior for the mines.
