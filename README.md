@@ -1,12 +1,15 @@
 # Homework 2 - CSE 380 - Spring 2023
-#### PeteyLumpkins
+- Peter Walsh - peter.t.walsh@stonybrook.edu
+- Professor Richard McKenna - richard@cs.stonybrook.edu
 ### Due Date: TBD
+
+
 ## Introduction
 In this assignment, you will make an infinite scroller game using the Typescript programming language and the Wolfie2D game engine. By completing this assignment, you should start to become familiar with the Wolfie2D game engine and develop an understanding of:
 
 * How to define a custom shader
 * Deal with simple collision detection
-* The EventQueue and how to handle game events
+* How to handle game events and use the EventQueue
 * Load sprites and animated sprites 
 
 ## Getting Started
@@ -263,7 +266,7 @@ As far as I know, there are two ways to do this. The first way involves hard-cod
 
 ### 4.2 - The Laser Shader
 The second shader you'll be working with is the shader for the submarine's laser beam. Inside of the `laser.fshader` file, you will find two functions in addition to the main method. 
-```
+```c
 /**
  *  This function generates the appropriate alpha value for the fragment color
  *  to render a laser that looks like a sine wave. The alpha value depends on 
