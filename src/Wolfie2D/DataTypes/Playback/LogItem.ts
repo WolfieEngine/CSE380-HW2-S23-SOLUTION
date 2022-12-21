@@ -1,7 +1,7 @@
 import Recording from "./Recording";
 
 /**
- * An interface that defines methods exposed by LogItem
+ * An interface for a LogItem in an abstract Recording.
  * @author Peter Walsh
  */
 export default interface LogItem {

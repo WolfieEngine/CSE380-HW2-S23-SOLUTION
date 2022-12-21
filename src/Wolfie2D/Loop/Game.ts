@@ -1,7 +1,7 @@
 import EventQueue from "../Events/EventQueue";
 import Input from "../Input/Input";
 import InputHandler from "../Input/InputHandler";
-import Recorder from "../Playback/EventRecorder";
+import Recorder from "../../hw3/playback/HW3Recorder";
 import Debug from "../Debug/Debug";
 import ResourceManager from "../ResourceManager/ResourceManager";
 import Viewport from "../SceneGraph/Viewport";
@@ -20,7 +20,7 @@ import RegistryManager from "../Registry/RegistryManager";
 import WebGLRenderer from "../Rendering/WebGLRenderer";
 import Scene from "../Scene/Scene";
 import RecordingManager from "../Playback/PlaybackManager";
-import InputReplayer from "../Playback/EventReplayer";
+import InputReplayer from "../../hw3/playback/HW3Replayer";
 import { TimerState } from "../Timing/Timer";
 import PlaybackManager from "../Playback/PlaybackManager";
 

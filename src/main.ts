@@ -2,7 +2,7 @@ import Game from "./Wolfie2D/Loop/Game";
 import MainMenu from "./hw3/scenes/main_menu/MainMenu";
 import RegistryManager from "./Wolfie2D/Registry/RegistryManager";
 
-import { PlayerControl } from "./hw3/AI/player/PlayerControllerEnums";
+import { PlayerControl } from "./hw3/ai/player/PlayerControllerEnums";
 
 import BubbleShaderType from "./hw3/shaders/BubbleShaderType";
 import LaserShaderType from "./hw3/shaders/LaserShaderType";

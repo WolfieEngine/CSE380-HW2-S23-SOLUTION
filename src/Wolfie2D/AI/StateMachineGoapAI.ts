@@ -1,6 +1,6 @@
 import GoapAction from "../DataTypes/Interfaces/GoapAction";
 import GoapAI from "../DataTypes/Interfaces/GoapAI";
-import Queue from "../DataTypes/Collections/Queue";
+import Queue from "../DataTypes/Collections/ArrayQueue";
 import Stack from "../DataTypes/Collections/Stack";
 import StateMachine from "../DataTypes/State/StateMachine";
 import GameNode from "../Nodes/GameNode";

@@ -2,7 +2,7 @@ import Vec2 from "../DataTypes/Vec2";
 import GameNode from "../Nodes/GameNode";
 import CanvasNode from "../Nodes/CanvasNode";
 import MathUtils from "../Utils/MathUtils";
-import Queue from "../DataTypes/Collections/Queue";
+import Queue from "../DataTypes/Collections/ArrayQueue";
 import AABB from "../DataTypes/Shapes/AABB";
 import Input from "../Input/Input";
 import ParallaxLayer from "../Scene/Layers/ParallaxLayer";

@@ -321,8 +321,8 @@ export default class BasicPhysicsManager extends PhysicsManager {
 		let max = new Vec2(node.sweptRect.right, node.sweptRect.bottom);
 
 		// Convert the min/max x/y to the min and max row/col in the tilemap array
-		let minIndex = tilemap.getMinColRow(null);
-		let maxIndex = tilemap.getMaxColRow(null);
+		let minIndex = tilemap.getMinColRow(node.sweptRect);
+		let maxIndex = tilemap.getMaxColRow(node.sweptRect);
 
 		// Loop over all possible tiles (which isn't many in the scope of the velocity per frame)
 		for(let col = minIndex.x; col <= maxIndex.x; col++){

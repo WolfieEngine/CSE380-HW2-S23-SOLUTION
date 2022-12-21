@@ -54,7 +54,7 @@ export default class PlayerController implements AI {
 	public initializeAI(owner: AnimatedSprite, options: PlayerControllerOptions): void {
 		this.owner = owner;
 
-		this.receiver = new Receiver();
+		this.receiver = new Receiver("Player");
 		this.emitter = new Emitter();
 
 		this.laserTimer = new Timer(2500, this.handleLaserTimerEnd, false);
@@ -156,7 +156,9 @@ export default class PlayerController implements AI {
 	/**
 	 * @see {AI.destroy}
 	 */
-	public destroy(): void {}
+	public destroy(): void {
+		this.receiver.destroy()
+	}
 
 	/**
 	 * This function handles a collision between a bubble and the player
