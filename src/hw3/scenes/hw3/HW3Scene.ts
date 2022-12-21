@@ -271,7 +271,7 @@ export default class HW3Scene extends Scene {
 		this.chrgLabel.font = "Courier";
 
 		// Charge airBars
-		this.chrgBarLabels = new Array(this.opts.playerControllerOptions.maxchrg);
+		this.chrgBarLabels = new Array(4);
 		for (let i = 0; i < this.chrgBarLabels.length; i++) {
 			let pos = new Vec2(this.opts.chrgBarPos.x + (i + 1)*(this.opts.chrgBarSize.x / this.chrgBarLabels.length), this.opts.chrgBarPos.y)
 			this.chrgBarLabels[i] = <Label>this.add.uiElement(UIElementType.LABEL, HW3Layers.UI, {position: pos, text: ""});
@@ -374,7 +374,7 @@ export default class HW3Scene extends Scene {
 			this.mines[i].visible = false;
 
 			// Assign them mine ai
-			this.mines[i].addAI(MineBehavior, this.opts.mineBehaviorOptions);
+			this.mines[i].addAI(MineBehavior);
 
 			this.mines[i].scale.set(0.3, 0.3);
 

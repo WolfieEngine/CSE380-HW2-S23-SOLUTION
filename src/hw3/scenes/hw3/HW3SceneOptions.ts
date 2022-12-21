@@ -1,6 +1,4 @@
 import RandUtils from "../../../Wolfie2D/Utils/RandUtils";
-import MineBehaviorOptions from "../../ai/mine/MineBehaviorOptions";
-import PlayerControllerOptions from "../../ai/player/PlayerControllerOptions";
 
 /**
  * A set of options to be passed to a HW3Scene
@@ -10,12 +8,6 @@ export default class HW3SceneOptions {
 
     /** A constant set of default HW3SceneOptions */
     public static defaults: HW3SceneOptions = {...new HW3SceneOptions()} as const;
-
-    /** @see PlayerControllerOptions */
-    playerControllerOptions: PlayerControllerOptions = new PlayerControllerOptions();
-
-    /** @see MineBehaviorOptions */
-    mineBehaviorOptions: MineBehaviorOptions = new MineBehaviorOptions();
 
     /** The maximum number of mines in the scenes mine object pool @defaultValue 15 */
     maxNumMines: number = 15;
@@ -83,9 +75,6 @@ export default class HW3SceneOptions {
      */
     public static parseOptions(opt: Record<string, any>, res: HW3SceneOptions, def: HW3SceneOptions): HW3SceneOptions {
         if (!opt) return res;
-
-        res.playerControllerOptions = PlayerControllerOptions.parseOptions(opt.playerControllerOptions, def.playerControllerOptions);
-        res.mineBehaviorOptions = MineBehaviorOptions.parseOptions(opt.mineBehaviorOptions, def.mineBehaviorOptions);
 
         res.maxNumMines ? opt.maxNumMines : def.maxNumMines;
         res.maxNumBubbles ? opt.maxNumBubbles : def.maxNumBubbles;

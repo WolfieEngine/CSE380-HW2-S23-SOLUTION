@@ -13,7 +13,6 @@ import MathUtils from "../../../Wolfie2D/Utils/MathUtils";
 import { HW3Events } from "../../scenes/hw3/HW3Enums";
 
 import { PlayerEvent, PlayerAnimation, PlayerControl } from "./PlayerControllerEnums";
-import PlayerControllerOptions from "./PlayerControllerOptions";
 import CanvasNode from "../../../Wolfie2D/Nodes/CanvasNode";
 
 
@@ -22,11 +21,22 @@ import CanvasNode from "../../../Wolfie2D/Nodes/CanvasNode";
  * @author PeteyLumpkins
  */
 export default class PlayerController implements AI {
-
 	/** The GameNode that owns this PlayerController AI */
 	private owner: AnimatedSprite;
-	/** A set of PlayerControllerOptions */
-	private opt: PlayerControllerOptions;
+
+    private currentHealth: number;
+    private maxHealth: number;
+    private minHealth: number;
+
+    private currentAir: number;
+    private maxAir: number;
+    private minAir: number;
+
+    private currentSpeed: number;
+
+    private currentCharge: number;
+    private maxCharge: number;
+    private minCharge: number;
 
 	/** A timer for charging the player's laser cannon thing */
 	private laserTimer: Timer;
@@ -38,23 +48,15 @@ export default class PlayerController implements AI {
 	private emitter: Emitter;
 
 	/**
-	 * This method initializes all variables inside of this AI class, and sets
-	 * up anything we need it do.
-	 * 
-	 * You should subscribe to the correct event for player damage here using the Receiver.
-	 * The AI will react to the event in handleEvent() - you just need to make sure
-	 * it is subscribed to them.
-	 * 
-	 * Also note the names of animations when calling this.owner.animation.play, you do not need to implement these parts but
-	 * note that you either need to adjust the names of the animations to what you have or rename the animations where appropriate.
-	 * 
+	 * This method initializes all variables inside of this AI class.
+     * 
 	 * @param owner The owner of this AI - i.e. the player
 	 * @param options The list of options for ai initialization
 	 */
-	public initializeAI(owner: AnimatedSprite, options: PlayerControllerOptions): void {
+	public initializeAI(owner: AnimatedSprite, options: Record<string,any>): void {
 		this.owner = owner;
 
-		this.receiver = new Receiver("Player");
+		this.receiver = new Receiver();
 		this.emitter = new Emitter();
 
 		this.laserTimer = new Timer(2500, this.handleLaserTimerEnd, false);
@@ -66,8 +68,27 @@ export default class PlayerController implements AI {
 
 		this.activate(options);
 	}
-	public activate(options: PlayerControllerOptions): void {
-		this.opt = PlayerControllerOptions.parseOptions(options, PlayerControllerOptions.defaults);
+	public activate(options: Record<string,any>): void {
+		// Set the player's current health
+        this.currentHealth = 10;
+
+        // Set upper and lower bounds on the player's health
+        this.minHealth = 0;
+        this.maxHealth = 10;
+
+        // Set the player's current air
+        this.currentAir = 20;
+
+        // Set upper and lower bounds on the player's air
+        this.minAir = 0;
+        this.maxAir = 20;
+
+        this.currentCharge = 4;
+        this.minCharge = 0;
+        this.maxCharge = 4;
+
+        // Set the player's movement speed
+        this.currentSpeed = 300
 	};
 	/**
 	 * Handles updates to the player 
@@ -89,6 +110,7 @@ export default class PlayerController implements AI {
 	 * @param deltaT - the amount of time that has passed since the last update
 	 */
 	public update(deltaT: number): void {
+        // First, handle all events 
 		while(this.receiver.hasNextEvent()){
 			this.handleEvent(this.receiver.getNextEvent());
 		}
@@ -98,14 +120,14 @@ export default class PlayerController implements AI {
 		let horizontalAxis = (Input.isPressed(PlayerControl.MOVE_LEFT) ? -1 : 0) + (Input.isPressed(PlayerControl.MOVE_RIGHT) ? 1 : 0);
 
 		// Handle trying to shoot a laser from the submarine
-		if (Input.isMouseJustPressed() && this.opt.curchrg > 0) {
-			this.opt.curchrg -= 1;
+		if (Input.isMouseJustPressed() && this.currentCharge > 0) {
+			this.currentCharge -= 1;
 			this.emitter.fireEvent(PlayerEvent.SHOOT_LASER, {src: this.owner.position});
-			this.emitter.fireEvent(PlayerEvent.CHARGE_CHANGE, {curchrg: this.opt.curchrg, maxchrg: this.opt.maxchrg});
+			this.emitter.fireEvent(PlayerEvent.CHARGE_CHANGE, {curchrg: this.currentCharge, maxchrg: this.maxCharge});
 		}
 
 		// Move the player
-		let movement = Vec2.UP.scaled(forwardAxis * this.opt.curspd).add(new Vec2(horizontalAxis * this.opt.curspd, 0));
+		let movement = Vec2.UP.scaled(forwardAxis * this.currentSpeed).add(new Vec2(horizontalAxis * this.currentSpeed, 0));
 		this.owner.position.add(movement.scaled(deltaT));
 
 		let vp = this.owner.getScene().getViewport();
@@ -115,15 +137,21 @@ export default class PlayerController implements AI {
 		this.wrapPlayer(this.owner, vp.getCenter(), vp.getHalfSize());
 
 		// Player looses a little bit of air each frame
-		this.opt.curair = MathUtils.clamp(this.opt.curair - deltaT, this.opt.minair, this.opt.maxair);
-		this.emitter.fireEvent(PlayerEvent.AIR_CHANGE, {curair: this.opt.curair, maxair: this.opt.maxair});
+		this.currentAir = MathUtils.clamp(this.currentAir - deltaT, this.minAir, this.maxAir);
+		this.emitter.fireEvent(PlayerEvent.AIR_CHANGE, {curair: this.currentAir, maxair: this.maxAir});
 
-		// If the player is out of air - subtract from hp
-		this.opt.curhp = this.opt.curair <= this.opt.minair ? MathUtils.clamp(this.opt.curhp - deltaT*2, this.opt.minhp, this.opt.maxhp) : this.opt.curhp;
-		// If the player is out of air - then the players hp changed - update the UI
-		this.opt.curair <= this.opt.minair && this.emitter.fireEvent(PlayerEvent.HEALTH_CHANGE, {curhp: this.opt.curhp, maxhp: this.opt.maxhp});
+		// If the player is out of air - start subtracting from the player's health
+		this.currentHealth = this.currentAir <= this.minAir ? MathUtils.clamp(this.currentHealth - deltaT*2, this.minHealth, this.maxHealth) : this.currentHealth;
+
+		// If the player is out of air - then the players health changed - update the UI
+		if (this.currentAir <= this.minAir) {
+            this.emitter.fireEvent(PlayerEvent.HEALTH_CHANGE, {curhp: this.currentHealth, maxhp: this.maxHealth});
+        }
+
 		// If the player is out of air and hp - then the player is dead
-		this.opt.curhp <= this.opt.minhp && this.emitter.fireEvent(PlayerEvent.DEAD);
+		if (this.currentHealth <= this.minHealth) { 
+            this.emitter.fireEvent(PlayerEvent.DEAD);
+        }
 	}
 	/**
 	 * This method handles all events that the reciever for the PlayerController is
@@ -148,8 +176,7 @@ export default class PlayerController implements AI {
 				break;
 			}
 			default: {
-				console.warn(`Unhandled event of type: ${event.type} caught in PlayerController`);
-				break;
+				throw new Error(`Unhandled event of type: ${event.type} caught in PlayerController`);
 			}
 		}
 	}
@@ -171,8 +198,8 @@ export default class PlayerController implements AI {
 	 * the scene should be notified of the change to the amount of air the player has left.
 	 */
 	protected handleBubbleCollisionEvent(event: GameEvent): void {
-		this.opt.curair = MathUtils.clamp(this.opt.curair + 1, this.opt.minair, this.opt.maxair);
-		this.emitter.fireEvent(PlayerEvent.AIR_CHANGE, {curair: this.opt.curair, maxair: this.opt.maxair});
+		this.currentAir = MathUtils.clamp(this.currentAir + 1, this.minAir, this.maxAir);
+		this.emitter.fireEvent(PlayerEvent.AIR_CHANGE, {curair: this.currentAir, maxair: this.maxAir});
 	}
 	/**
 	 * This function handles a collision between a mine and the player
@@ -186,8 +213,8 @@ export default class PlayerController implements AI {
 	 */
 	protected handleMineCollisionEvent(event: GameEvent): void {
 		if (this.invincibleTimer.isStopped()) {
-			this.opt.curhp = MathUtils.clamp(this.opt.curhp - 1, this.opt.minhp, this.opt.maxhp);
-			this.emitter.fireEvent(PlayerEvent.HEALTH_CHANGE, {curhp: this.opt.curhp, maxhp: this.opt.maxhp});
+			this.currentHealth = MathUtils.clamp(this.currentHealth - 1, this.minHealth, this.maxHealth);
+			this.emitter.fireEvent(PlayerEvent.HEALTH_CHANGE, {curhp: this.currentHealth, maxhp: this.maxHealth});
 			this.invincibleTimer.start();
 		}
 	}
@@ -281,9 +308,9 @@ export default class PlayerController implements AI {
 	 * updates the total number of charges the player's laser cannon has
 	 */
 	protected handleLaserTimerEnd = () => {
-		this.opt.curchrg = MathUtils.clamp(this.opt.curchrg + 1, this.opt.minchrg, this.opt.maxchrg);
-		this.emitter.fireEvent(PlayerEvent.CHARGE_CHANGE, {curchrg: this.opt.curchrg, maxchrg: this.opt.maxchrg});
-		if (this.opt.curchrg < this.opt.maxchrg) {
+		this.currentCharge = MathUtils.clamp(this.currentCharge + 1, this.minCharge, this.maxCharge);
+		this.emitter.fireEvent(PlayerEvent.CHARGE_CHANGE, {curchrg: this.currentCharge, maxchrg: this.maxCharge});
+		if (this.currentCharge < this.maxCharge) {
 			this.laserTimer.start();
 		}
 	}
