@@ -81,13 +81,18 @@ export default class PlaybackManager implements Updateable {
      * recording. Recording is done via the Recorder object associated with the Recording.
      */
     protected handleStartRecordingEvent(event: GameEvent): void {
-        let recording = event.data.get("recording");
-        if (!this.replaying && !this.recording && recording !== undefined) {
-            this.lastRecording = recording;
-            this.recorder = this.lastRecording.recorder();
-            this.recorder.start(this.lastRecording);
-            this.recording = this.recorder.active();
-        }
+        let recording: Recording<LogItem> = event.data.get("recording");
+        if (recording !== undefined) {
+            if (!this.replaying) {
+                if (this.lastRecording !== undefined) this.lastRecording.destroy();
+                this.lastRecording = recording;
+                this.recorder = this.lastRecording.recorder();
+                this.recorder.start(this.lastRecording);
+                this.recording = this.recorder.active();
+            } else {
+                recording.destroy();
+            }
+        } 
     }
     /**
      * Handles a stop recording event

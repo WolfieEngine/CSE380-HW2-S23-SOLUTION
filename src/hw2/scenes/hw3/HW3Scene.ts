@@ -23,7 +23,6 @@ import BubbleAI from "../../ai/bubble/BubbleBehavior";
 import LaserBehavior, { LaserEvents } from "../../ai/laser/LaserBehavior";
 
 import GameOver from "../game_over/GameOver";
-import HW3SceneOptions from "./HW3SceneOptions";
 
 import BubbleShaderType from "../../shaders/BubbleShaderType";
 import LaserShaderType from "../../shaders/LaserShaderType";
@@ -37,8 +36,10 @@ import EventRecording from "../../playback/HW3Recording";
  * @see Scene for more information about the Scene class and Scenes in Wolfie2D
  */
 export default class HW3Scene extends Scene {
-	// The options for the HW3Scene
-	private opts: HW3SceneOptions;
+    // A flag to indicate whether or not this scene is being recorded
+    private recording: boolean;
+    // The seed that should be set before the game starts
+    private seed: string;
 
 	// Sprites for the background images
 	private bg1: Sprite;
@@ -87,7 +88,8 @@ export default class HW3Scene extends Scene {
 	 * @see Scene.initScene
 	 */
 	public override initScene(options: Record<string, any>): void {
-		this.opts = HW3SceneOptions.parseOptions(options, new HW3SceneOptions(), HW3SceneOptions.defaults);
+		this.seed = options.seed === undefined ? RandUtils.randomSeed() : options.seed;
+        this.recording = options.recording === undefined ? false : options.recording; 
 	}
 	/**
 	 * @see Scene.loadScene
@@ -104,7 +106,7 @@ export default class HW3Scene extends Scene {
 	 * @see Scene.startScene
 	 */
 	public override startScene(){
-		this.worldPadding = new Vec2(this.opts.worldPadding.x, this.opts.worldPadding.y);
+		this.worldPadding = new Vec2(64, 64);
 
 		// Create a background layer
 		this.addLayer(HW3Layers.BACKGROUND, 0);
@@ -130,12 +132,14 @@ export default class HW3Scene extends Scene {
 
 		// Subscribe to laser events
 		this.receiver.subscribe(LaserEvents.FIRING);
-		// Set the seed
-		RandUtils.seed = this.opts.seed;
 
-        if (this.opts.recording) {
-		    // Start Recording
-		    this.emitter.fireEvent(GameEventType.START_RECORDING, {recording: new EventRecording(HW3Scene, {seed: this.opts.seed, recording: false})});
+		// Set the seed in RandUtils to the seed for the game
+		RandUtils.seed = this.seed;
+
+        // If we're recording - send a signal to the playback system to start recording
+        if (this.recording) {
+		    // Send the start recording event
+		    this.emitter.fireEvent(GameEventType.START_RECORDING, {recording: new EventRecording(HW3Scene, {seed: this.seed, recording: false})});
         }
 	}
 	/**
@@ -253,51 +257,51 @@ export default class HW3Scene extends Scene {
 		this.addUILayer(HW3Layers.UI);
 
 		// HP Label
-		this.healthLabel = <Label>this.add.uiElement(UIElementType.LABEL, HW3Layers.UI, {position: new Vec2(this.opts.hpLabelPos.x, this.opts.hpLabelPos.y), text: "HP "});
+		this.healthLabel = <Label>this.add.uiElement(UIElementType.LABEL, HW3Layers.UI, {position: new Vec2(50, 50), text: "HP "});
 		this.healthLabel.size.set(300, 30);
 		this.healthLabel.fontSize = 24;
 		this.healthLabel.font = "Courier";
 
 		// Air Label
-		this.airLabel = <Label>this.add.uiElement(UIElementType.LABEL, HW3Layers.UI, {position: new Vec2(this.opts.airLabelPos.x, this.opts.airLabelPos.y), text: "Air"});
+		this.airLabel = <Label>this.add.uiElement(UIElementType.LABEL, HW3Layers.UI, {position: new Vec2(50, 100), text: "Air"});
 		this.airLabel.size.set(300, 30);
 		this.airLabel.fontSize = 24;
 		this.airLabel.font = "Courier";
 
 		// Charge Label
-		this.chrgLabel = <Label>this.add.uiElement(UIElementType.LABEL, HW3Layers.UI, {position: new Vec2(this.opts.chrgLabelPos.x, this.opts.chrgLabelPos.y), text: "Lasers"});
+		this.chrgLabel = <Label>this.add.uiElement(UIElementType.LABEL, HW3Layers.UI, {position: new Vec2(475, 50), text: "Lasers"});
 		this.chrgLabel.size.set(300, 30);
 		this.chrgLabel.fontSize = 24;
 		this.chrgLabel.font = "Courier";
 
 		// Charge airBars
-		this.chrgBarLabels = new Array(this.opts.playerControllerOptions.maxchrg);
+		this.chrgBarLabels = new Array(4);
 		for (let i = 0; i < this.chrgBarLabels.length; i++) {
-			let pos = new Vec2(this.opts.chrgBarPos.x + (i + 1)*(this.opts.chrgBarSize.x / this.chrgBarLabels.length), this.opts.chrgBarPos.y)
+			let pos = new Vec2(500 + (i + 1)*(300 / this.chrgBarLabels.length), 50)
 			this.chrgBarLabels[i] = <Label>this.add.uiElement(UIElementType.LABEL, HW3Layers.UI, {position: pos, text: ""});
-			this.chrgBarLabels[i].size = new Vec2(this.opts.chrgBarSize.x / this.chrgBarLabels.length, this.opts.chrgBarSize.y);
+			this.chrgBarLabels[i].size = new Vec2(300 / this.chrgBarLabels.length, 25);
 			this.chrgBarLabels[i].backgroundColor = Color.GREEN;
 			this.chrgBarLabels[i].borderColor = Color.BLACK;
 		}
 
 		// HealthBar
-		this.healthBar = <Label>this.add.uiElement(UIElementType.LABEL, HW3Layers.UI, {position: new Vec2(this.opts.hpBarPos.x, this.opts.hpBarPos.y), text: ""});
-		this.healthBar.size = new Vec2(this.opts.hpBarSize.x, this.opts.hpBarSize.y);
+		this.healthBar = <Label>this.add.uiElement(UIElementType.LABEL, HW3Layers.UI, {position: new Vec2(225, 50), text: ""});
+		this.healthBar.size = new Vec2(300, 25);
 		this.healthBar.backgroundColor = Color.GREEN;
 
 		// AirBar
-		this.airBar = <Label>this.add.uiElement(UIElementType.LABEL, HW3Layers.UI, {position: new Vec2(this.opts.airBarPos.x, this.opts.airBarPos.y), text: ""});
-		this.airBar.size = new Vec2(this.opts.airBarSize.x, this.opts.airBarSize.y);
+		this.airBar = <Label>this.add.uiElement(UIElementType.LABEL, HW3Layers.UI, {position: new Vec2(225, 100), text: ""});
+		this.airBar.size = new Vec2(300, 25);
 		this.airBar.backgroundColor = Color.CYAN;
 
 		// HealthBar Border
-		this.healthBarBg = <Label>this.add.uiElement(UIElementType.LABEL, HW3Layers.UI, {position: new Vec2(this.opts.hpBarPos.x, this.opts.hpBarPos.y), text: ""});
-		this.healthBarBg.size = new Vec2(this.opts.hpBarSize.x, this.opts.hpBarSize.y);
+		this.healthBarBg = <Label>this.add.uiElement(UIElementType.LABEL, HW3Layers.UI, {position: new Vec2(225, 50), text: ""});
+		this.healthBarBg.size = new Vec2(300, 25);
 		this.healthBarBg.borderColor = Color.BLACK;
 
 		// AirBar Border
-		this.airBarBg = <Label>this.add.uiElement(UIElementType.LABEL, HW3Layers.UI, {position: new Vec2(this.opts.airBarPos.x, this.opts.airBarPos.y), text: ""});
-		this.airBarBg.size = new Vec2(this.opts.airBarSize.x, this.opts.airBarSize.y);
+		this.airBarBg = <Label>this.add.uiElement(UIElementType.LABEL, HW3Layers.UI, {position: new Vec2(225, 100), text: ""});
+		this.airBarBg.size = new Vec2(300, 25);
 		this.airBarBg.borderColor = Color.BLACK;
 
 	}
@@ -305,13 +309,13 @@ export default class HW3Scene extends Scene {
 	 * Initializes the timer objects for the game.
 	 */
 	protected initTimers(): void {
-		this.mineSpawnTimer = new Timer(this.opts.mineSpawnRate);
+		this.mineSpawnTimer = new Timer(500);
 		this.mineSpawnTimer.start();
 
-		this.bubbleSpawnTimer = new Timer(this.opts.bubbleSpawnRate);
+		this.bubbleSpawnTimer = new Timer(2500);
 		this.bubbleSpawnTimer.start();
 
-		this.gameOverTimer = new Timer(this.opts.gameOverTime);
+		this.gameOverTimer = new Timer(3000);
 	}
 	/**
 	 * Initializes the background image sprites for the game.
@@ -348,7 +352,7 @@ export default class HW3Scene extends Scene {
 	protected initObjectPools(): void {
 		
 		// Init bubble object pool
-		this.bubbles = new Array(this.opts.maxNumBubbles);
+		this.bubbles = new Array(10);
 		for (let i = 0; i < this.bubbles.length; i++) {
 			this.bubbles[i] = this.add.graphic(GraphicType.RECT, HW3Layers.PRIMARY, {position: new Vec2(0, 0), size: new Vec2(50, 50)});
             
@@ -358,7 +362,7 @@ export default class HW3Scene extends Scene {
 			this.bubbles[i].color = Color.BLUE;
 
             // Give the bubbles AI
-			this.bubbles[i].addAI(BubbleAI, this.opts.bubbleBehaviorOptions);
+			this.bubbles[i].addAI(BubbleAI);
 
             // Give the bubbles a collider
 			let collider = new Circle(Vec2.ZERO, 25);
@@ -366,7 +370,7 @@ export default class HW3Scene extends Scene {
 		}
 
 		// Init the object pool of mines
-		this.mines = new Array(this.opts.maxNumMines);
+		this.mines = new Array(15);
 		for (let i = 0; i < this.mines.length; i++){
 			this.mines[i] = this.add.sprite(HW3Sprites.MINE, HW3Layers.PRIMARY);
 
@@ -374,7 +378,7 @@ export default class HW3Scene extends Scene {
 			this.mines[i].visible = false;
 
 			// Assign them mine ai
-			this.mines[i].addAI(MineBehavior, this.opts.mineBehaviorOptions);
+			this.mines[i].addAI(MineBehavior);
 
 			this.mines[i].scale.set(0.3, 0.3);
 
@@ -384,7 +388,7 @@ export default class HW3Scene extends Scene {
 		}
 
 		// Init the object pool of lasers
-		this.lasers = new Array(this.opts.maxNumLasers);
+		this.lasers = new Array(4);
 		for (let i = 0; i < this.lasers.length; i++) {
 			this.lasers[i] = this.add.graphic(GraphicType.RECT, HW3Layers.PRIMARY, {position: Vec2.ZERO, size: Vec2.ZERO})
 			this.lasers[i].useCustomShader(LaserShaderType.KEY);
@@ -466,13 +470,13 @@ export default class HW3Scene extends Scene {
 
 			// Loop on position until we're clear of the player
 			mine.position = RandUtils.randVec(viewportSize.x, paddedViewportSize.x, paddedViewportSize.y - viewportSize.y, viewportSize.y);
-			while(mine.position.distanceTo(this.player.position) < this.opts.mineSpawnDist){
+			while(mine.position.distanceTo(this.player.position) < 100){
 				mine.position = RandUtils.randVec(paddedViewportSize.x, paddedViewportSize.x, 0, paddedViewportSize.y);
 			}
 
 			mine.setAIActive(true, {});
-			// RockAI.SPEED += this.ROCK_SPEED_INC;
-			this.mineSpawnTimer.start(this.opts.mineSpawnRate);
+			// Start the mine spawn timer - spawn a mine every half a second I think
+			this.mineSpawnTimer.start(500);
 
 		}
 	}
