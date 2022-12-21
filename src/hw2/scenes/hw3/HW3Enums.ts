@@ -12,7 +12,7 @@
  */
 export enum HW3Sprites {
 	PLAYER = "PLAYER", 
-	ROCK = "ROCK", 
+	MINE = "MINE", 
 	BACKGROUND = "BACKGROUND"
 }
 

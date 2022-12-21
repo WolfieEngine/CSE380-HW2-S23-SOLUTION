@@ -93,12 +93,12 @@ export default class HW3Scene extends Scene {
 	 * @see Scene.loadScene
 	 */
 	public override loadScene(){
-		// Load in the player car spritesheet
-		this.load.spritesheet(HW3Sprites.PLAYER, "hw3_assets/spritesheets/sub.json");
+		// Load in the submarine
+		this.load.spritesheet(HW3Sprites.PLAYER, "hw2_assets/spritesheets/sub.json");
 		// Load in the background image
-		this.load.image(HW3Sprites.BACKGROUND, "hw3_assets/sprites/WavyBlueLines.png");
-		// Load in the rock sprite
-		this.load.image(HW3Sprites.ROCK, "hw3_assets/sprites/SpikyMineThing.png");
+		this.load.image(HW3Sprites.BACKGROUND, "hw2_assets/sprites/WavyBlueLines.png");
+		// Load in the naval mine
+		this.load.image(HW3Sprites.MINE, "hw2_assets/sprites/SpikyMineThing.png");
 	}
 	/**
 	 * @see Scene.startScene
@@ -368,7 +368,7 @@ export default class HW3Scene extends Scene {
 		// Init the object pool of mines
 		this.mines = new Array(this.opts.maxNumMines);
 		for (let i = 0; i < this.mines.length; i++){
-			this.mines[i] = this.add.sprite(HW3Sprites.ROCK, HW3Layers.PRIMARY);
+			this.mines[i] = this.add.sprite(HW3Sprites.MINE, HW3Layers.PRIMARY);
 
 			// Make our mine inactive by default
 			this.mines[i].visible = false;
