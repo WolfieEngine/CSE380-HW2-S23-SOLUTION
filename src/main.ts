@@ -1,8 +1,8 @@
 import Game from "./Wolfie2D/Loop/Game";
-import MainMenu from "./hw2/scenes/main_menu/MainMenu";
+import MainMenu from "./hw2/scenes/MainMenu";
 import RegistryManager from "./Wolfie2D/Registry/RegistryManager";
 
-import { PlayerControl } from "./hw2/ai/player/PlayerControllerEnums";
+import { HW2Controls } from "./hw2/HW2Controls";
 
 import BubbleShaderType from "./hw2/shaders/BubbleShaderType";
 import LaserShaderType from "./hw2/shaders/LaserShaderType";
@@ -15,10 +15,10 @@ import LaserShaderType from "./hw2/shaders/LaserShaderType";
         canvasSize: {x: 900, y: 900},          // The size of the game
         clearColor: {r: 0.1, g: 0.1, b: 0.1},   // The color the game clears to
         inputs: [
-            { name: PlayerControl.MOVE_UP, keys: ["w"] },   // Forward is assigned to w
-            { name: PlayerControl.MOVE_DOWN, keys: ["s"] },  // and so on...
-            { name: PlayerControl.MOVE_LEFT, keys: ["a"] },
-            { name: PlayerControl.MOVE_RIGHT, keys: ["d"] },
+            { name: HW2Controls.MOVE_UP, keys: ["w"] },   // Forward is assigned to w
+            { name: HW2Controls.MOVE_DOWN, keys: ["s"] },  // and so on...
+            { name: HW2Controls.MOVE_LEFT, keys: ["a"] },
+            { name: HW2Controls.MOVE_RIGHT, keys: ["d"] },
         ],
         useWebGL: true,                        // Tell the game we want to use webgl
         showDebug: false                       // Whether to show debug messages. You can change this to true if you want

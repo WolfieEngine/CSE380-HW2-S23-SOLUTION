@@ -1,23 +1,26 @@
-import AI from "../../../Wolfie2D/DataTypes/Interfaces/AI";
-import Vec2 from "../../../Wolfie2D/DataTypes/Vec2";
-import Emitter from "../../../Wolfie2D/Events/Emitter";
-import GameEvent from "../../../Wolfie2D/Events/GameEvent";
-import Receiver from "../../../Wolfie2D/Events/Receiver";
-import Input from "../../../Wolfie2D/Input/Input";
-import AnimatedSprite from "../../../Wolfie2D/Nodes/Sprites/AnimatedSprite";
-import Timer from "../../../Wolfie2D/Timing/Timer";
-import Viewport from "../../../Wolfie2D/SceneGraph/Viewport";
-import MathUtils from "../../../Wolfie2D/Utils/MathUtils";
+import AI from "../../Wolfie2D/DataTypes/Interfaces/AI";
+import Vec2 from "../../Wolfie2D/DataTypes/Vec2";
+import Emitter from "../../Wolfie2D/Events/Emitter";
+import GameEvent from "../../Wolfie2D/Events/GameEvent";
+import Receiver from "../../Wolfie2D/Events/Receiver";
+import Input from "../../Wolfie2D/Input/Input";
+import AnimatedSprite from "../../Wolfie2D/Nodes/Sprites/AnimatedSprite";
+import Timer from "../../Wolfie2D/Timing/Timer";
+import Viewport from "../../Wolfie2D/SceneGraph/Viewport";
+import MathUtils from "../../Wolfie2D/Utils/MathUtils";
 
+import { HW2Events } from "../HW2Events";
+import { HW2Controls } from "../HW2Controls";
 
-import { HW3Events } from "../../scenes/hw3/HW3Enums";
+import CanvasNode from "../../Wolfie2D/Nodes/CanvasNode";
 
-import { PlayerEvent, PlayerAnimation, PlayerControl } from "./PlayerControllerEnums";
-import CanvasNode from "../../../Wolfie2D/Nodes/CanvasNode";
+enum PlayerAnimations {
+    IDLE = "IDLE"
+}
 
 
 /**
- * A class for controlling the player. 
+ * A class for controlling the player in the HW2Scene.
  * @author PeteyLumpkins
  */
 export default class PlayerController implements AI {
@@ -62,9 +65,9 @@ export default class PlayerController implements AI {
 		this.laserTimer = new Timer(2500, this.handleLaserTimerEnd, false);
 		this.invincibleTimer = new Timer(2000);
 		
-		this.receiver.subscribe(HW3Events.PLAYER_BUBBLE_COLLISION);
-		this.receiver.subscribe(HW3Events.PLAYER_MINE_COLLISION);
-		this.receiver.subscribe(PlayerEvent.SHOOT_LASER);
+		this.receiver.subscribe(HW2Events.PLAYER_BUBBLE_COLLISION);
+		this.receiver.subscribe(HW2Events.PLAYER_MINE_COLLISION);
+		this.receiver.subscribe(HW2Events.SHOOT_LASER);
 
 		this.activate(options);
 	}
@@ -89,6 +92,9 @@ export default class PlayerController implements AI {
 
         // Set the player's movement speed
         this.currentSpeed = 300
+
+        // Play the idle animation by default
+		this.owner.animation.play(PlayerAnimations.IDLE);
 	};
 	/**
 	 * Handles updates to the player 
@@ -116,14 +122,14 @@ export default class PlayerController implements AI {
 		}
 
 		// Get the player's input direction 
-		let forwardAxis = (Input.isPressed(PlayerControl.MOVE_UP) ? 1 : 0) + (Input.isPressed(PlayerControl.MOVE_DOWN) ? -1 : 0);
-		let horizontalAxis = (Input.isPressed(PlayerControl.MOVE_LEFT) ? -1 : 0) + (Input.isPressed(PlayerControl.MOVE_RIGHT) ? 1 : 0);
+		let forwardAxis = (Input.isPressed(HW2Controls.MOVE_UP) ? 1 : 0) + (Input.isPressed(HW2Controls.MOVE_DOWN) ? -1 : 0);
+		let horizontalAxis = (Input.isPressed(HW2Controls.MOVE_LEFT) ? -1 : 0) + (Input.isPressed(HW2Controls.MOVE_RIGHT) ? 1 : 0);
 
 		// Handle trying to shoot a laser from the submarine
 		if (Input.isMouseJustPressed() && this.currentCharge > 0) {
 			this.currentCharge -= 1;
-			this.emitter.fireEvent(PlayerEvent.SHOOT_LASER, {src: this.owner.position});
-			this.emitter.fireEvent(PlayerEvent.CHARGE_CHANGE, {curchrg: this.currentCharge, maxchrg: this.maxCharge});
+			this.emitter.fireEvent(HW2Events.SHOOT_LASER, {src: this.owner.position});
+			this.emitter.fireEvent(HW2Events.CHARGE_CHANGE, {curchrg: this.currentCharge, maxchrg: this.maxCharge});
 		}
 
 		// Move the player
@@ -138,19 +144,19 @@ export default class PlayerController implements AI {
 
 		// Player looses a little bit of air each frame
 		this.currentAir = MathUtils.clamp(this.currentAir - deltaT, this.minAir, this.maxAir);
-		this.emitter.fireEvent(PlayerEvent.AIR_CHANGE, {curair: this.currentAir, maxair: this.maxAir});
+		this.emitter.fireEvent(HW2Events.AIR_CHANGE, {curair: this.currentAir, maxair: this.maxAir});
 
 		// If the player is out of air - start subtracting from the player's health
 		this.currentHealth = this.currentAir <= this.minAir ? MathUtils.clamp(this.currentHealth - deltaT*2, this.minHealth, this.maxHealth) : this.currentHealth;
 
 		// If the player is out of air - then the players health changed - update the UI
 		if (this.currentAir <= this.minAir) {
-            this.emitter.fireEvent(PlayerEvent.HEALTH_CHANGE, {curhp: this.currentHealth, maxhp: this.maxHealth});
+            this.emitter.fireEvent(HW2Events.HEALTH_CHANGE, {curhp: this.currentHealth, maxhp: this.maxHealth});
         }
 
 		// If the player is out of air and hp - then the player is dead
 		if (this.currentHealth <= this.minHealth) { 
-            this.emitter.fireEvent(PlayerEvent.DEAD);
+            this.emitter.fireEvent(HW2Events.DEAD);
         }
 	}
 	/**
@@ -163,15 +169,15 @@ export default class PlayerController implements AI {
 	 */
 	public handleEvent(event: GameEvent): void {
 		switch(event.type) {
-			case HW3Events.PLAYER_BUBBLE_COLLISION: {
+			case HW2Events.PLAYER_BUBBLE_COLLISION: {
 				this.handleBubbleCollisionEvent(event);
 				break;
 			}
-			case HW3Events.PLAYER_MINE_COLLISION: {
+			case HW2Events.PLAYER_MINE_COLLISION: {
 				this.handleMineCollisionEvent(event);
 				break;
 			}
-			case PlayerEvent.SHOOT_LASER: {
+			case HW2Events.SHOOT_LASER: {
 				this.handleShootLaserEvent(event);
 				break;
 			}
@@ -199,7 +205,7 @@ export default class PlayerController implements AI {
 	 */
 	protected handleBubbleCollisionEvent(event: GameEvent): void {
 		this.currentAir = MathUtils.clamp(this.currentAir + 1, this.minAir, this.maxAir);
-		this.emitter.fireEvent(PlayerEvent.AIR_CHANGE, {curair: this.currentAir, maxair: this.maxAir});
+		this.emitter.fireEvent(HW2Events.AIR_CHANGE, {curair: this.currentAir, maxair: this.maxAir});
 	}
 	/**
 	 * This function handles a collision between a mine and the player
@@ -214,7 +220,7 @@ export default class PlayerController implements AI {
 	protected handleMineCollisionEvent(event: GameEvent): void {
 		if (this.invincibleTimer.isStopped()) {
 			this.currentHealth = MathUtils.clamp(this.currentHealth - 1, this.minHealth, this.maxHealth);
-			this.emitter.fireEvent(PlayerEvent.HEALTH_CHANGE, {curhp: this.currentHealth, maxhp: this.maxHealth});
+			this.emitter.fireEvent(HW2Events.HEALTH_CHANGE, {curhp: this.currentHealth, maxhp: this.maxHealth});
 			this.invincibleTimer.start();
 		}
 	}
@@ -309,7 +315,7 @@ export default class PlayerController implements AI {
 	 */
 	protected handleLaserTimerEnd = () => {
 		this.currentCharge = MathUtils.clamp(this.currentCharge + 1, this.minCharge, this.maxCharge);
-		this.emitter.fireEvent(PlayerEvent.CHARGE_CHANGE, {curchrg: this.currentCharge, maxchrg: this.maxCharge});
+		this.emitter.fireEvent(HW2Events.CHARGE_CHANGE, {curchrg: this.currentCharge, maxchrg: this.maxCharge});
 		if (this.currentCharge < this.maxCharge) {
 			this.laserTimer.start();
 		}

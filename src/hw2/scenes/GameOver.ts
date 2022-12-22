@@ -1,11 +1,15 @@
-import Vec2 from "../../../Wolfie2D/DataTypes/Vec2";
-import Input from "../../../Wolfie2D/Input/Input";
-import Label from "../../../Wolfie2D/Nodes/UIElements/Label";
-import { UIElementType } from "../../../Wolfie2D/Nodes/UIElements/UIElementTypes";
-import Scene from "../../../Wolfie2D/Scene/Scene";
-import Color from "../../../Wolfie2D/Utils/Color";
-import MainMenu from "../main_menu/MainMenu";
+import Vec2 from "../../Wolfie2D/DataTypes/Vec2";
+import Input from "../../Wolfie2D/Input/Input";
+import Label from "../../Wolfie2D/Nodes/UIElements/Label";
+import { UIElementType } from "../../Wolfie2D/Nodes/UIElements/UIElementTypes";
+import Scene from "../../Wolfie2D/Scene/Scene";
+import Color from "../../Wolfie2D/Utils/Color";
+import MainMenu from "./MainMenu";
 
+/**
+ * The scene after the main HW3Scene. The scene ends when the user clicks anywhere on
+ * the screen.
+ */
 export default class GameOver extends Scene {
     private bubblesPopped: number;
     private minesDestroyed: number;
@@ -15,6 +19,7 @@ export default class GameOver extends Scene {
     private mineTier: number;
     private timeTier: number;
 
+    // The emojis for the different tiers on the GameOver screen. Your welcome ;) - PeteyLumpkins
     private static tier = [
         0x1F921, 
         0x1F612, 
@@ -23,7 +28,7 @@ export default class GameOver extends Scene {
         0x1F975
     ];
 
-    initScene(options: Record<string, any>){
+    public initScene(options: Record<string, any>){
         this.bubblesPopped = options.bubblesPopped;
         this.minesDestroyed = options.minesDestroyed;
         this.timePassed = Math.round(options.timePassed);
@@ -32,7 +37,7 @@ export default class GameOver extends Scene {
         this.bubbleTier = this.getBubbleTier(this.bubblesPopped);
     }
 
-    getTimeTier(time: number) {
+    public getTimeTier(time: number) {
         switch(true) {
             case time <= 30:
                 return GameOver.tier[0];
@@ -49,7 +54,7 @@ export default class GameOver extends Scene {
         }
     }
 
-    getMineTier(mines: number) {
+    public getMineTier(mines: number) {
         switch(true) {
             case mines <= 10:
                 return GameOver.tier[0];
@@ -66,7 +71,7 @@ export default class GameOver extends Scene {
         }
     }
 
-    getBubbleTier(bubbles: number) {
+    public getBubbleTier(bubbles: number) {
         switch(true) {
             case bubbles <= 10:
                 return GameOver.tier[0];
@@ -83,7 +88,7 @@ export default class GameOver extends Scene {
         }
     }
 
-    startScene() {
+    public startScene() {
         const center = this.viewport.getCenter();
 
         this.addUILayer("primary");
@@ -104,7 +109,7 @@ export default class GameOver extends Scene {
         text.textColor = Color.WHITE;
     }
 
-    updateScene(){
+    public updateScene(){
         if(Input.isMouseJustPressed()){
             this.sceneManager.changeToScene(MainMenu);
         }
