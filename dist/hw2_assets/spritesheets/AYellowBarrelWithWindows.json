@@ -7,8 +7,8 @@
 	"rightBuffer": 0,
 	"topBuffer": 0,
 	"bottomBuffer": 0,
-	"columns": 1,
-	"rows": 1,
+	"columns": 2,
+	"rows": 2,
 	"animations": [
         {
             "name": "IDLE",
@@ -17,14 +17,26 @@
                 {
                     "index": 0,
                     "duration": 10
-                },
+                }
+            ]
+        },
+        {
+            "name": "HIT",
+            "repeat": false,
+            "frames": [
                 {
-                    "index": 0,
-                    "duration": 10
-                },
+                    "index": 1,
+                    "duration": 7
+                }
+            ]
+        },
+        {
+            "name": "DEATH",
+            "repeat": false,
+            "frames":[
                 {
-                    "index": 0,
-                    "duration": 10
+                    "index": 3,
+                    "duration": 5
                 }
             ]
         }

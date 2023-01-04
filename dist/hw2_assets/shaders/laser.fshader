@@ -40,12 +40,12 @@ float sinwave_laser(vec4 position);
  *  |													   |
  *  +------------------------------------------------------+
  */
-float linear_laser(vec4 position, float mid);
+float linear_laser(vec4 position);
 
 
 void main(){
 	gl_FragColor = vec4(laser_color);
-	gl_FragColor.a = linear_laser(v_Position, MIDLINE)*gl_FragColor.a;
+	gl_FragColor.a = linear_laser(v_Position)*gl_FragColor.a;
 }
 
 
@@ -56,8 +56,8 @@ float sinwave_laser(vec4 position) {
 	return 1.0 - dist;
 }
 
-float linear_laser(vec4 position, float mid) {
-	float dist = distance(position.y, mid);
+float linear_laser(vec4 position) {
+	float dist = distance(position.y, MIDLINE);
 	return 1.0 - smoothstep(MIN_DISTANCE, MAX_DISTANCE, dist);
 }
 
