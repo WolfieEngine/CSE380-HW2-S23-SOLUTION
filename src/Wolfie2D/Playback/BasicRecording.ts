@@ -1,15 +1,15 @@
-import Scene from "../../Wolfie2D/Scene/Scene";
-import Recording from "../../Wolfie2D/DataTypes/Playback/Recording";
-import Queue from "../../Wolfie2D/DataTypes/Interfaces/Queue";
+import Scene from "../Scene/Scene";
+import Recording from "../DataTypes/Playback/Recording";
+import Queue from "../DataTypes/Interfaces/Queue";
 
-import HW3Recorder from "./HW3Recorder";
-import HW3Replayer from "./HW3Replayer";
-import HW3LogItem from "./HW3LogItem";
+import BasicRecorder from "./BasicRecorder";
+import BasicReplayer from "./BasicReplayer";
+import BasicLogItem from "./BasicLogItem";
 
 /**
  * A data structure used to maintain the HW3 recording.
  */
-export default class HW3Recording implements Recording<HW3LogItem>, Queue<HW3LogItem> {
+export default class BasicRecording implements Recording<BasicLogItem>, Queue<BasicLogItem> {
 
     /** The initial scene that the recording starts from. */
     private _scene: new (...args: any) => Scene;
@@ -17,14 +17,14 @@ export default class HW3Recording implements Recording<HW3LogItem>, Queue<HW3Log
     private _init: Record<string, any>;
 
     /** The sentinal node */
-    private _sent: HW3LogItem;
+    private _sent: BasicLogItem;
     /** The number of items in the recording */
     private _size: number;
 
     /** A recorder object that can record this type of recording */
-    private _recorder: HW3Recorder;
+    private _recorder: BasicRecorder;
     /** A replayer object that can replay this type of recording */
-    private _replayer: HW3Replayer;
+    private _replayer: BasicReplayer;
 
 
     /**
@@ -35,24 +35,24 @@ export default class HW3Recording implements Recording<HW3LogItem>, Queue<HW3Log
         this._scene = scene;
         this._init = init;
 
-        this._sent = new HW3LogItem(-1, -1, null);
+        this._sent = new BasicLogItem(-1, -1, null);
         this.sent.next = this.sent;
         this.sent.prev = this.sent;
         this.size = 0;
 
-        this._recorder = new HW3Recorder();
-        this._replayer = new HW3Replayer();
+        this._recorder = new BasicRecorder();
+        this._replayer = new BasicReplayer();
     }
 
     /**
      * @returns a recorder object that can be used to record this type of recording
      */
-    public recorder(): HW3Recorder { return this._recorder; }
+    public recorder(): BasicRecorder { return this._recorder; }
 
     /** 
      * @returns a replayer object that can be used to replay this type of recording
      */
-    public replayer(): HW3Replayer { return this._replayer; }
+    public replayer(): BasicReplayer { return this._replayer; }
     
     /**
      * @returns the scene the recording should start at
@@ -76,7 +76,7 @@ export default class HW3Recording implements Recording<HW3LogItem>, Queue<HW3Log
      * Adds an item to the back of the queue
      * @param item The item to add to the back of the queue
      */
-    public enqueue(item: HW3LogItem): void {
+    public enqueue(item: BasicLogItem): void {
         item.next = this.sent;
         item.prev = this.sent.prev;
         this.sent.prev.next = item;
@@ -88,12 +88,12 @@ export default class HW3Recording implements Recording<HW3LogItem>, Queue<HW3Log
      * Retrieves an item from the front of the queue
      * @returns The item at the front of the queue
      */
-    public dequeue(): HW3LogItem | null { 
+    public dequeue(): BasicLogItem | null { 
         if (!this.hasItems()) {
             return null;
         }
 
-        let item: HW3LogItem = this.sent.next;
+        let item: BasicLogItem = this.sent.next;
         this.sent.next = this.sent.next.next;
         this.sent.next.prev = this.sent;
         this.size -= 1;
@@ -104,7 +104,7 @@ export default class HW3Recording implements Recording<HW3LogItem>, Queue<HW3Log
      * Returns the item at the front of the queue, but does not remove it
      * @returns The item at the front of the queue; if the list is empty returns null.
      */
-    public peekNext(): HW3LogItem | null { 
+    public peekNext(): BasicLogItem | null { 
         if (!this.hasItems()) {
             return null;
         }
@@ -129,7 +129,7 @@ export default class HW3Recording implements Recording<HW3LogItem>, Queue<HW3Log
      * Iterates through all of the items in this data structure.
      * @param func The function to evaluate of every item in the collection
      */
-    public forEach(func: (item: HW3LogItem, index?: number) => void): void {
+    public forEach(func: (item: BasicLogItem, index?: number) => void): void {
         let next = this.sent.next;
         let index = 0;
         while(next !== this.sent) {
@@ -150,7 +150,7 @@ export default class HW3Recording implements Recording<HW3LogItem>, Queue<HW3Log
 
     /** Protected getters and setters for workign with the size and sentinal node */
 
-    protected get sent(): HW3LogItem { return this._sent; }
+    protected get sent(): BasicLogItem { return this._sent; }
     protected get size(): number { return this._size; }
     protected set size(size: number) { this._size = size; }
 

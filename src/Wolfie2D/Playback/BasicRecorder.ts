@@ -1,20 +1,20 @@
-import Receiver from "../../Wolfie2D/Events/Receiver";
-import { GameEventType } from "../../Wolfie2D/Events/GameEventType";
-import Recorder from "../../Wolfie2D/DataTypes/Playback/Recorder";
-import Updateable from "../../Wolfie2D/DataTypes/Interfaces/Updateable";
-import HW3Recording from "./HW3Recording";
-import HW3LogItem from "./HW3LogItem";
+import Receiver from "../Events/Receiver";
+import { GameEventType } from "../Events/GameEventType";
+import Recorder from "../DataTypes/Playback/Recorder";
+import Updateable from "../DataTypes/Interfaces/Updateable";
+import BasicRecording from "./BasicRecording";
+import BasicLogItem from "./BasicLogItem";
 
 
 /**
  * A recorder for the HW3Recording. 
  * @see Recorder
  */
-export default class HW3Recorder implements Recorder<HW3Recording, HW3LogItem> {
+export default class BasicRecorder implements Recorder<BasicRecording, BasicLogItem> {
 	private _active: boolean;
 	private _receiver: Receiver;
 	private _frame: number;
-	private _recording: HW3Recording;
+	private _recording: BasicRecording;
 
 	public constructor(){
 		this._receiver = new Receiver();
@@ -38,14 +38,14 @@ export default class HW3Recorder implements Recorder<HW3Recording, HW3LogItem> {
 		else {
 			this._frame += 1;
 			while(this._receiver.hasNextEvent()){
-				this._recording.enqueue(new HW3LogItem(this._frame, deltaT, this._receiver.getNextEvent()));
+				this._recording.enqueue(new BasicLogItem(this._frame, deltaT, this._receiver.getNextEvent()));
 			}
 		}
 	}
     /**
      * @see Recorder.start
      */
-	public start(recording: HW3Recording): void {
+	public start(recording: BasicRecording): void {
 		this._active = true;
 		this._frame = 0;
 		this._recording = recording;

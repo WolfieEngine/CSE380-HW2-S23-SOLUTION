@@ -1,4 +1,4 @@
-import EventRecorder from "../../../hw2/playback/HW3Recorder"
+import EventRecorder from "../../Playback/BasicRecorder"
 
 describe('EventRecorder', () => {
 

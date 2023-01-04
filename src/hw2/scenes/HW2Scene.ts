@@ -27,7 +27,7 @@ import BubbleShaderType from "../shaders/BubbleShaderType";
 import LaserShaderType from "../shaders/LaserShaderType";
 
 import { GameEventType } from "../../Wolfie2D/Events/GameEventType";
-import EventRecording from "../playback/HW3Recording";
+import BasicRecording from "../../Wolfie2D/Playback/BasicRecording";
 
 import { HW2Events } from "../HW2Events";
 
@@ -161,7 +161,7 @@ export default class HW2Scene extends Scene {
         // If we're recording - send a signal to the playback system to start recording
         if (this.recording) {
 		    // Send the start recording event
-		    this.emitter.fireEvent(GameEventType.START_RECORDING, {recording: new EventRecording(HW2Scene, {seed: this.seed, recording: false})});
+		    this.emitter.fireEvent(GameEventType.START_RECORDING, {recording: new BasicRecording(HW2Scene, {seed: this.seed, recording: false})});
         }
 	}
 

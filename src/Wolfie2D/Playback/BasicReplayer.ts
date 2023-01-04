@@ -1,16 +1,16 @@
-import EventQueue from "../../Wolfie2D/Events/EventQueue";
-import { GameEventType } from "../../Wolfie2D/Events/GameEventType";
-import Emitter from "../../Wolfie2D/Events/Emitter";
-import { InputHandlers } from "../../Wolfie2D/Input/InputHandler";
-import Replayer from "../../Wolfie2D/DataTypes/Playback/Replayer";
+import EventQueue from "../Events/EventQueue";
+import { GameEventType } from "../Events/GameEventType";
+import Emitter from "../Events/Emitter";
+import { InputHandlers } from "../Input/InputHandler";
+import Replayer from "../DataTypes/Playback/Replayer";
 
 
-import HW3Recording from "./HW3Recording";
-import HW3LogItem from "./HW3LogItem";
-import NullFunc from "../../Wolfie2D/DataTypes/Functions/NullFunc";
+import BasicRecording from "./BasicRecording";
+import BasicLogItem from "./BasicLogItem";
+import NullFunc from "../DataTypes/Functions/NullFunc";
 
 
-export default class HW3Replayer implements Replayer<HW3Recording, HW3LogItem> {
+export default class BasicReplayer implements Replayer<BasicRecording, BasicLogItem> {
     private eventQueue: EventQueue;
     private emitter: Emitter;
 
@@ -18,7 +18,7 @@ export default class HW3Replayer implements Replayer<HW3Recording, HW3LogItem> {
     private _frame: number;
     private _count: number;
 
-    private recording: HW3Recording;
+    private recording: BasicRecording;
     private onEnd: () => void;
 
     public constructor() {
@@ -59,7 +59,7 @@ export default class HW3Replayer implements Replayer<HW3Recording, HW3LogItem> {
      * @param recording the HW3Recording to start replaying
      * @param onEnd an optional callback function that gets called when the replay stops
      */
-    public start(recording: HW3Recording, onEnd: () => void = NullFunc): void {
+    public start(recording: BasicRecording, onEnd: () => void = NullFunc): void {
         // Clear any info about previous replay
         this._frame = 0;
         this._count = 0;
@@ -79,7 +79,7 @@ export default class HW3Replayer implements Replayer<HW3Recording, HW3LogItem> {
     
     }
     /**
-     * @see HW3Replayer.stop()
+     * @see BasicReplayer.stop()
      */
     public stop(): void {
         this._active = false;
