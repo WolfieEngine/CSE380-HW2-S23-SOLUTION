@@ -47,10 +47,10 @@ enum HW3Layers {
 export default class HW2Scene extends Scene {
     // The key and path to the player's spritesheet json data
     public static PLAYER_KEY: string = "PLAYER";
-    public static PLAYER_PATH = "hw2_assets/spritesheets/sub.json"
+    public static PLAYER_PATH = "hw2_assets/spritesheets/AYellowBarrelWithWindows.json"
     // The key and path to the mine sprite
     public static MINE_KEY = "MINE"
-    public static MINE_PATH = "hw2_assets/sprites/SpikyMineThing.png"
+    public static MINE_PATH = "hw2_assets/spritesheets/SpikyMineThing.json"
     // The key and path to the background sprite
 	public static BACKGROUND_KEY = "BACKGROUND"
     public static BACKGROUND_PATH = "hw2_assets/sprites/WavyBlueLines.png"
@@ -72,7 +72,7 @@ export default class HW2Scene extends Scene {
 	// Object pool for lasers
 	private lasers: Array<Graphic>;
 	// Object pool for rocks
-	private mines: Array<Sprite>;
+	private mines: Array<AnimatedSprite>;
 	// Object pool for bubbles
 	private bubbles: Array<Graphic>;
 
@@ -121,7 +121,7 @@ export default class HW2Scene extends Scene {
 		// Load in the background image
 		this.load.image(HW2Scene.BACKGROUND_KEY, HW2Scene.BACKGROUND_PATH);
 		// Load in the naval mine
-		this.load.image(HW2Scene.MINE_KEY, HW2Scene.MINE_PATH);
+		this.load.spritesheet(HW2Scene.MINE_KEY, HW2Scene.MINE_PATH);
 	}
 	/**
 	 * @see Scene.startScene
@@ -132,6 +132,7 @@ export default class HW2Scene extends Scene {
 		// Create a background layer
 		this.addLayer(HW3Layers.BACKGROUND, 0);
 		this.initBackground();
+
 		// Create a layer to serve as our main game - Feel free to use this for your own assets
 		// It is given a depth of 5 to be above our background
 		this.addLayer(HW3Layers.PRIMARY, 5);
@@ -163,6 +164,7 @@ export default class HW2Scene extends Scene {
 		    this.emitter.fireEvent(GameEventType.START_RECORDING, {recording: new EventRecording(HW2Scene, {seed: this.seed, recording: false})});
         }
 	}
+
 	/**
 	 * @see Scene.updateScene 
 	 */
@@ -206,7 +208,6 @@ export default class HW2Scene extends Scene {
 				break;
 			}
 			case HW2Events.DEAD: {
-				this.player.setAIActive(false, {});
 				this.gameOverTimer.start();
 				break;
 			}
@@ -389,7 +390,7 @@ export default class HW2Scene extends Scene {
 		// Init the object pool of mines
 		this.mines = new Array(15);
 		for (let i = 0; i < this.mines.length; i++){
-			this.mines[i] = this.add.sprite(HW2Scene.MINE_KEY, HW3Layers.PRIMARY);
+			this.mines[i] = this.add.animatedSprite(HW2Scene.MINE_KEY, HW3Layers.PRIMARY);
 
 			// Make our mine inactive by default
 			this.mines[i].visible = false;
@@ -474,11 +475,11 @@ export default class HW2Scene extends Scene {
 	 * 							X THIS IS OUT OF BOUNDS
 	 */
 	protected spawnMine(): void {
-		// Find the first visible rock
+		// Find the first visible mine
 		let mine: Sprite = this.mines.find((rock: Sprite) => { return !rock.visible });
 
 		if (mine){
-			// Bring this rock to life
+			// Bring this mine to life
 			mine.visible = true;
 
 			// Extract the size of the viewport
@@ -520,10 +521,9 @@ export default class HW2Scene extends Scene {
 	 * 
 	 * @remarks
 	 * 
-	 * You'll notice that if you play the game without changing any of the code, rocks will 
-	 * suddenly stop coming, and you'll no longer be able to fire bullets after a few click. 
-	 * This is because all of those objects are still active in the scene, just out of sight, 
-	 * so to our object pools we've used up all valid objects.
+	 * You'll notice that if you play the game without changing any of the code, miness will 
+	 * suddenly stop coming. This is because all of those objects are still active in the scene,
+     * just out of sight, so to our object pools we've used up all valid objects.
 	 * 
 	 * Keep in mind that the despawn area in this case is padded, meaning that a GameNode can 
 	 * go off the side of the viewport by the padding amount in any direction before it will be 
@@ -714,8 +714,7 @@ export default class HW2Scene extends Scene {
 		let collisions = 0;
 		for (let bubble of this.bubbles) {
 			if (bubble.visible && HW2Scene.checkAABBtoCircleCollision(<AABB>this.player.collisionShape, <Circle>bubble.collisionShape)){
-				bubble.visible = false;
-				this.emitter.fireEvent(HW2Events.PLAYER_BUBBLE_COLLISION);
+				this.emitter.fireEvent(HW2Events.PLAYER_BUBBLE_COLLISION, {bubbleId: bubble.id});
 				collisions += 1;
 			}
 		}
@@ -743,8 +742,7 @@ export default class HW2Scene extends Scene {
 		let collisions = 0;
 		for (let mine of this.mines) {
 			if (mine.visible && this.player.collisionShape.overlaps(mine.collisionShape)) {
-				mine.visible = false;
-				this.emitter.fireEvent(HW2Events.PLAYER_MINE_COLLISION);
+				this.emitter.fireEvent(HW2Events.PLAYER_MINE_COLLISION, {id: mine.id});
 				collisions += 1;
 			}
 		}	
@@ -773,7 +771,7 @@ export default class HW2Scene extends Scene {
 		if (laser.visible) {
 			for (let mine of mines) {
 				if (mine.collisionShape.overlaps(laser.collisionShape)) {
-					mine.visible = false;
+					this.emitter.fireEvent(HW2Events.LASER_MINE_COLLISION, { mineId: mine.id, laserId: laser.id });
 					collisions += 1;
 				}
 			}

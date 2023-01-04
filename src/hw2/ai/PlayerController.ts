@@ -15,7 +15,9 @@ import { HW2Controls } from "../HW2Controls";
 import CanvasNode from "../../Wolfie2D/Nodes/CanvasNode";
 
 enum PlayerAnimations {
-    IDLE = "IDLE"
+    IDLE = "IDLE",
+    HIT = "HIT",
+    DEATH = "DEATH"
 }
 
 
@@ -68,6 +70,7 @@ export default class PlayerController implements AI {
 		this.receiver.subscribe(HW2Events.PLAYER_BUBBLE_COLLISION);
 		this.receiver.subscribe(HW2Events.PLAYER_MINE_COLLISION);
 		this.receiver.subscribe(HW2Events.SHOOT_LASER);
+        this.receiver.subscribe(HW2Events.PLAYER_WAS_HIT);
 
 		this.activate(options);
 	}
@@ -137,7 +140,8 @@ export default class PlayerController implements AI {
 		this.owner.position.add(movement.scaled(deltaT));
 
 		let vp = this.owner.getScene().getViewport();
-		// Lock the players position
+
+		// Lock the players position 
 		this.lockPlayer(this.owner, vp.getCenter(), vp.getHalfSize());
 		// Wrap the players position
 		this.wrapPlayer(this.owner, vp.getCenter(), vp.getHalfSize());
@@ -154,9 +158,10 @@ export default class PlayerController implements AI {
             this.emitter.fireEvent(HW2Events.HEALTH_CHANGE, {curhp: this.currentHealth, maxhp: this.maxHealth});
         }
 
-		// If the player is out of air and hp - then the player is dead
+		// If the player is out of air and hp - play the death animation
 		if (this.currentHealth <= this.minHealth) { 
-            this.emitter.fireEvent(HW2Events.DEAD);
+            this.owner.animation.play(PlayerAnimations.DEATH, false, HW2Events.DEAD);
+            this.owner.aiActive = false;
         }
 	}
 	/**
@@ -181,6 +186,10 @@ export default class PlayerController implements AI {
 				this.handleShootLaserEvent(event);
 				break;
 			}
+            case HW2Events.PLAYER_WAS_HIT: {
+                this.handlePlayerHitEvent(event);
+                break;
+            }
 			default: {
 				throw new Error(`Unhandled event of type: ${event.type} caught in PlayerController`);
 			}
@@ -219,6 +228,7 @@ export default class PlayerController implements AI {
 	 */
 	protected handleMineCollisionEvent(event: GameEvent): void {
 		if (this.invincibleTimer.isStopped()) {
+            this.owner.animation.playIfNotAlready(PlayerAnimations.HIT, false, HW2Events.PLAYER_WAS_HIT);
 			this.currentHealth = MathUtils.clamp(this.currentHealth - 1, this.minHealth, this.maxHealth);
 			this.emitter.fireEvent(HW2Events.HEALTH_CHANGE, {curhp: this.currentHealth, maxhp: this.maxHealth});
 			this.invincibleTimer.start();
@@ -233,9 +243,13 @@ export default class PlayerController implements AI {
 		this.laserTimer.start();
 	}
 
+    protected handlePlayerHitEvent(event: GameEvent): void {
+        this.owner.animation.play(PlayerAnimations.IDLE, true);
+    }
+
 	/**
 	 * Function for locking the player's coordinates. Player should not be able to move off the 
-	 * top or bottom of the screen.
+	 * left or right side of the screen.
 	 * 
 	 * @see {Viewport} for more information about the viewport
 	 * 

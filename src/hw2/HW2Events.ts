@@ -5,7 +5,7 @@ export enum HW2Events {
     /**
      * The event that gets emitted when the player collides with a mine
      * 
-     * Has data: {}
+     * Has data: { id: number }
      */
 	PLAYER_MINE_COLLISION = "PLAYER_MINE_COLLISION", 
 
@@ -58,5 +58,18 @@ export enum HW2Events {
      * 
      * Has data: { laser: GameNode }
      */
-    FIRING_LASER = "LASER_FIRING"
+    FIRING_LASER = "LASER_FIRING",
+
+    /**
+     * The event sent by a mines animation manager after the mine has played it's exploding animation
+     * 
+     * Has data: { id: number, }
+     * 
+     */
+    MINE_EXPLODED = "MINE_EXPLODED",
+
+
+    LASER_MINE_COLLISION = "LASER_MINE_COLLISION",
+
+    PLAYER_WAS_HIT = "PLAYER_WAS_HIT"
 }
