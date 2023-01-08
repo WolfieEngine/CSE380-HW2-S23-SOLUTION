@@ -124,6 +124,12 @@ export default class PlayerController implements AI {
 			this.handleEvent(this.receiver.getNextEvent());
 		}
 
+        // If the player is out of hp - play the death animation
+		if (this.currentHealth <= this.minHealth) { 
+            this.owner.animation.playIfNotAlready(PlayerAnimations.DEATH, false, HW2Events.DEAD);
+            return;
+        }
+
 		// Get the player's input direction 
 		let forwardAxis = (Input.isPressed(HW2Controls.MOVE_UP) ? 1 : 0) + (Input.isPressed(HW2Controls.MOVE_DOWN) ? -1 : 0);
 		let horizontalAxis = (Input.isPressed(HW2Controls.MOVE_LEFT) ? -1 : 0) + (Input.isPressed(HW2Controls.MOVE_RIGHT) ? 1 : 0);
@@ -156,12 +162,6 @@ export default class PlayerController implements AI {
 		// If the player is out of air - then the players health changed - update the UI
 		if (this.currentAir <= this.minAir) {
             this.emitter.fireEvent(HW2Events.HEALTH_CHANGE, {curhp: this.currentHealth, maxhp: this.maxHealth});
-        }
-
-		// If the player is out of air and hp - play the death animation
-		if (this.currentHealth <= this.minHealth) { 
-            this.owner.animation.play(PlayerAnimations.DEATH, false, HW2Events.DEAD);
-            this.owner.aiActive = false;
         }
 	}
 	/**
