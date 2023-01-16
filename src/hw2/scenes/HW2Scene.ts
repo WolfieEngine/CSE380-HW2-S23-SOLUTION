@@ -185,13 +185,9 @@ export default class HW2Scene extends Scene {
 		// Handle timers
 		this.handleTimers();
 
-		// Get the viewport center and padded size
-		let viewportCenter = this.viewport.getCenter().clone();
-		let paddedViewportSize = this.viewport.getHalfSize().scaled(2).add(this.worldPadding.scaled(2));
-
 		// Handle screen despawning of mines and bubbles
-		for (let mine of this.mines) if (mine.visible) this.handleScreenDespawn(mine, viewportCenter, paddedViewportSize);
-		for (let bubble of this.bubbles) if (bubble.visible) this.handleScreenDespawn(bubble, viewportCenter, paddedViewportSize);
+		for (let mine of this.mines) if (mine.visible) this.handleScreenDespawn(mine);
+		for (let bubble of this.bubbles) if (bubble.visible) this.handleScreenDespawn(bubble);
 	}
 
 
@@ -552,9 +548,9 @@ export default class HW2Scene extends Scene {
 	 * 
 	 * It may be helpful to make your own drawings while figuring out the math for this part.
 	 */
-	public handleScreenDespawn(node: CanvasNode, viewportCenter: Vec2, paddedViewportSize: Vec2): void {
-		let vp = new AABB(viewportCenter, paddedViewportSize.clone().div(new Vec2(2, 2)));
-		if (!node.collisionShape.getBoundingRect().overlaps(vp)) {
+	public handleScreenDespawn(node: CanvasNode): void {
+		
+		if (!node.collisionShape.getBoundingRect().overlaps(this.viewport.getView())) {
 			node.visible = false;
 		}
 	}
