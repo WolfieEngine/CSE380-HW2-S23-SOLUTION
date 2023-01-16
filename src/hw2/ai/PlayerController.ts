@@ -67,6 +67,7 @@ export default class PlayerController implements AI {
 		this.laserTimer = new Timer(2500, this.handleLaserTimerEnd, false);
 		this.invincibleTimer = new Timer(2000);
 		
+        // TODO Remove subscribing to events from the scene
 		this.receiver.subscribe(HW2Events.PLAYER_BUBBLE_COLLISION);
 		this.receiver.subscribe(HW2Events.PLAYER_MINE_COLLISION);
 		this.receiver.subscribe(HW2Events.SHOOT_LASER);

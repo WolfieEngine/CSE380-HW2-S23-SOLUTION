@@ -1,6 +1,8 @@
 precision mediump float;
 
 varying vec4 v_Position;
+
+// TODO Remove this uniform locator for the color
 uniform vec4 laser_color;
 
 /**
@@ -42,13 +44,14 @@ float sinwave_laser(vec4 position);
  */
 float linear_laser(vec4 position);
 
-
+// TODO Get the color for the laserbeam
 void main(){
 	gl_FragColor = vec4(laser_color);
 	gl_FragColor.a = linear_laser(v_Position)*gl_FragColor.a;
 }
 
 
+// TODO Get the laser to look like a sinwave
 float sinwave_laser(vec4 position) {
 	float x = position.x / MAX_DISTANCE;
 	float y = position.y / MAX_DISTANCE;

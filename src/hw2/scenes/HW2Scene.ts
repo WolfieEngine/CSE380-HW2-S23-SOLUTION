@@ -155,6 +155,8 @@ export default class HW2Scene extends Scene {
 		// Subscribe to laser events
 		this.receiver.subscribe(HW2Events.FIRING_LASER);
 
+        // TODO Remove the start recording and setting the random seed here!
+
 		// Set the seed in RandUtils to the seed for the game
 		RandUtils.seed = this.seed;
 
