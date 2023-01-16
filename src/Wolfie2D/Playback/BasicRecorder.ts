@@ -4,6 +4,7 @@ import Recorder from "../DataTypes/Playback/Recorder";
 import Updateable from "../DataTypes/Interfaces/Updateable";
 import BasicRecording from "./BasicRecording";
 import BasicLogItem from "./BasicLogItem";
+import GameEvent from "../Events/GameEvent";
 
 
 /**
@@ -37,6 +38,7 @@ export default class BasicRecorder implements Recorder<BasicRecording, BasicLogI
 		if (!this._active) { this._receiver.ignoreEvents(); }
 		else {
 			this._frame += 1;
+            this._recording.enqueue(new BasicLogItem(this._frame, deltaT, new GameEvent("")));
 			while(this._receiver.hasNextEvent()){
 				this._recording.enqueue(new BasicLogItem(this._frame, deltaT, this._receiver.getNextEvent()));
 			}
