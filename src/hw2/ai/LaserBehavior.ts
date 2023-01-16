@@ -84,6 +84,9 @@ export default class LaserBehavior implements AI {
             // Set alpha of the laser
             this.owner.alpha = MathUtils.changeRange(this.currentCharge, this.minCharge, this.maxCharge, 0, 1);
 
+            // Update the color of the laser
+            this.owner.color.b = MathUtils.changeRange(this.maxCharge - this.currentCharge, this.minCharge, this.maxCharge, 0, 255);
+
             // If this is the first time the laser is fired - send the firing event.
             if (this.currentCharge === this.maxCharge) {
                 this.emitter.fireEvent(HW2Events.FIRING_LASER, {laser: this.owner});
