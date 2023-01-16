@@ -4,9 +4,10 @@ import GameEvent from "../../Wolfie2D/Events/GameEvent";
 import Receiver from "../../Wolfie2D/Events/Receiver";
 import Graphic from "../../Wolfie2D/Nodes/Graphic";
 import AnimatedSprite from "../../Wolfie2D/Nodes/Sprites/AnimatedSprite";
+import Timer from "../../Wolfie2D/Timing/Timer";
 import { HW2Events } from "../HW2Events";
 
-enum MineAnimations {
+export enum MineAnimations {
     IDLE = "IDLE",
     EXPLODING = "EXPLODING"
 }
@@ -20,6 +21,8 @@ export default class MineBehavior implements AI {
     private speed: number;
     private direction: Vec2;
     private receiver: Receiver;
+    
+    private explosionTimer: Timer;
 
     /**
      * @see {AI.initializeAI}
@@ -33,6 +36,8 @@ export default class MineBehavior implements AI {
         this.receiver.subscribe(HW2Events.LASER_MINE_COLLISION);
         this.receiver.subscribe(HW2Events.MINE_EXPLODED);
 
+        this.explosionTimer = new Timer(2000);
+
         this.activate(options);
     }
     /**
@@ -40,6 +45,8 @@ export default class MineBehavior implements AI {
      */
     activate(options: Record<string, any>): void {
         this.speed = 100;
+        this.owner.animation.play(MineAnimations.IDLE, true);
+        this.receiver.ignoreEvents();
     }
     /**
      * @see {AI.handleEvent}
@@ -101,7 +108,7 @@ export default class MineBehavior implements AI {
     protected handleMineExploded(event: GameEvent): void {
         let id = event.data.get("owner");
         if (id === this.owner.id) {
-            this.owner.animation.play(MineAnimations.IDLE, true);
+            this.owner.position.copy(Vec2.ZERO);
             this.owner.visible = false;
         }
     }

@@ -38,6 +38,9 @@ export default class BasicRecorder implements Recorder<BasicRecording, BasicLogI
 		if (!this._active) { this._receiver.ignoreEvents(); }
 		else {
 			this._frame += 1;
+            // I need to figure out a better way to do this - shouldn't just add an empty event
+            // like this. The reason I'm doing it is because if the player just decides to idle
+            // and not press any keys, the recording ends immediatly.
             this._recording.enqueue(new BasicLogItem(this._frame, deltaT, new GameEvent("")));
 			while(this._receiver.hasNextEvent()){
 				this._recording.enqueue(new BasicLogItem(this._frame, deltaT, this._receiver.getNextEvent()));

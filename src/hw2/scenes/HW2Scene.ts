@@ -17,7 +17,7 @@ import MathUtils from "../../Wolfie2D/Utils/MathUtils";
 
 import PlayerController from "../ai/PlayerController";
 
-import MineBehavior from "../ai/MineBehavior";
+import MineBehavior, { MineAnimations } from "../ai/MineBehavior";
 import BubbleAI from "../ai/BubbleBehavior";
 import LaserBehavior from "../ai/LaserBehavior";
 
@@ -472,25 +472,25 @@ export default class HW2Scene extends Scene {
 	 */
 	protected spawnMine(): void {
 		// Find the first visible mine
-		let mine: Sprite = this.mines.find((rock: Sprite) => { return !rock.visible });
+		let mine: Sprite = this.mines.find((mine: Sprite) => { return !mine.visible });
 
 		if (mine){
 			// Bring this mine to life
 			mine.visible = true;
 
 			// Extract the size of the viewport
-			let paddedViewportSize = this.viewport.getHalfSize().scaled(2).add(this.worldPadding.scaled(2));
+			let paddedViewportSize = this.viewport.getHalfSize().scaled(2).add(this.worldPadding);
 			let viewportSize = this.viewport.getHalfSize().scaled(2);
 
 			// Loop on position until we're clear of the player
-			mine.position = RandUtils.randVec(viewportSize.x, paddedViewportSize.x, paddedViewportSize.y - viewportSize.y, viewportSize.y);
+			mine.position.copy(RandUtils.randVec(viewportSize.x, paddedViewportSize.x, paddedViewportSize.y - viewportSize.y, viewportSize.y));
 			while(mine.position.distanceTo(this.player.position) < 100){
-				mine.position = RandUtils.randVec(paddedViewportSize.x, paddedViewportSize.x, 0, paddedViewportSize.y);
+				mine.position.copy(RandUtils.randVec(paddedViewportSize.x, paddedViewportSize.x, paddedViewportSize.y - viewportSize.y, viewportSize.y));
 			}
 
 			mine.setAIActive(true, {});
 			// Start the mine spawn timer - spawn a mine every half a second I think
-			this.mineSpawnTimer.start(500);
+			this.mineSpawnTimer.start(100);
 
 		}
 	}
