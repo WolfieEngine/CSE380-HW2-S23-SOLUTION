@@ -4,6 +4,7 @@ import Vec2 from "../../Wolfie2D/DataTypes/Vec2";
 import Emitter from "../../Wolfie2D/Events/Emitter";
 import GameEvent from "../../Wolfie2D/Events/GameEvent";
 import Graphic from "../../Wolfie2D/Nodes/Graphic";
+import Color from "../../Wolfie2D/Utils/Color";
 import MathUtils from "../../Wolfie2D/Utils/MathUtils";
 
 import { HW2Events } from "../HW2Events";
@@ -82,6 +83,9 @@ export default class LaserBehavior implements AI {
     
             // Set alpha of the laser
             this.owner.alpha = MathUtils.changeRange(this.currentCharge, this.minCharge, this.maxCharge, 0, 1);
+
+            // Update the color of the laser
+            this.owner.color.b = MathUtils.changeRange(this.maxCharge - this.currentCharge, this.minCharge, this.maxCharge, 0, 255);
 
             // If this is the first time the laser is fired - send the firing event.
             if (this.currentCharge === this.maxCharge) {

@@ -45,7 +45,7 @@ float linear_laser(vec4 position);
 
 void main(){
 	gl_FragColor = vec4(laser_color);
-	gl_FragColor.a = linear_laser(v_Position)*gl_FragColor.a;
+	gl_FragColor.a = sinwave_laser(v_Position)*gl_FragColor.a;
 }
 
 
