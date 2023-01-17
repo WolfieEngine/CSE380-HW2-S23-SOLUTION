@@ -146,8 +146,6 @@ export default class HW2Scene extends Scene {
 		this.initObjectPools();
 
 		// Subscribe to player events
-		this.receiver.subscribe(HW2Events.HEALTH_CHANGE);
-		this.receiver.subscribe(HW2Events.AIR_CHANGE);
 		this.receiver.subscribe(HW2Events.CHARGE_CHANGE);
 		this.receiver.subscribe(HW2Events.SHOOT_LASER);
 		this.receiver.subscribe(HW2Events.DEAD);
@@ -209,14 +207,6 @@ export default class HW2Scene extends Scene {
 			}
 			case HW2Events.DEAD: {
 				this.gameOverTimer.start();
-				break;
-			}
-			case HW2Events.HEALTH_CHANGE: {
-				this.handleHealthChange(event.data.get("curhp"), event.data.get("maxhp"));
-				break;
-			}
-			case HW2Events.AIR_CHANGE: {
-				this.handleAirChange(event.data.get("curair"), event.data.get("maxair"));
 				break;
 			}
 			case HW2Events.CHARGE_CHANGE: {
@@ -553,10 +543,7 @@ export default class HW2Scene extends Scene {
 	 * It may be helpful to make your own drawings while figuring out the math for this part.
 	 */
 	public handleScreenDespawn(node: CanvasNode): void {
-		
-		if (!node.collisionShape.getBoundingRect().overlaps(this.viewport.getView())) {
-			node.visible = false;
-		}
+        // TODO - despawn the game nodes when they move out of the padded viewport
 	}
 
 	/** Methods for updating the UI */
