@@ -3,6 +3,11 @@ import Vec2 from "../../Wolfie2D/DataTypes/Vec2";
 import Rect from "../../Wolfie2D/Nodes/Graphics/Rect";
 import RectShaderType from "../../Wolfie2D/Rendering/WebGLRendering/ShaderTypes/RectShaderType";
 
+// TODO Find a way to pass the color of the laser to the laser's fragment shader program
+
+/**
+ * 
+ */
 export default class LaserShaderType extends RectShaderType {
 
 	/** This is the key of the shader program for the LaserShaderType */
@@ -62,11 +67,6 @@ export default class LaserShaderType extends RectShaderType {
 		const u_Transform = gl.getUniformLocation(program, "u_Transform");
 		gl.uniformMatrix4fv(u_Transform, false, transformation.toArray());
 
-		// TODO remove the color
-		let webGL_color = options.color.toWebGL();
-		const laser_color = gl.getUniformLocation(program, "laser_color");
-		gl.uniform4f(laser_color, webGL_color[0], webGL_color[1], webGL_color[2], webGL_color[3]);
-
 		// Draw the quad
 		gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
 	}
@@ -76,8 +76,6 @@ export default class LaserShaderType extends RectShaderType {
 			position: gc.position,
 			size: gc.size,
 			rotation: gc.rotation,
-            // TODO remove the color
-			color: gc.color,
 		}
 		return options;
 	}
