@@ -4,10 +4,6 @@ import Rect from "../../Wolfie2D/Nodes/Graphics/Rect";
 import RectShaderType from "../../Wolfie2D/Rendering/WebGLRendering/ShaderTypes/RectShaderType";
 
 // TODO Find a way to pass the color of the laser to the laser's fragment shader program
-
-/**
- * 
- */
 export default class LaserShaderType extends RectShaderType {
 
 	/** This is the key of the shader program for the LaserShaderType */

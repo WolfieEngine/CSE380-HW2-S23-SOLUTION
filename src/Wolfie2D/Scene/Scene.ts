@@ -131,13 +131,19 @@ export default class Scene implements Updateable {
         TimerManager.getInstance().clearTimers();
     }
 
-    /** A lifecycle method that gets called immediately after a new scene is created, before anything else. */
+    /** 
+     * A lifecycle method that gets called immediately after a new scene is created, before anything else. 
+     */
     initScene(init: Record<string, any>): void {}
 
-    /** A lifecycle method that gets called when a new scene is created. Load all files you wish to access in the scene here. */
+    /** 
+     * A lifecycle method that gets called when a new scene is created. Load all files you wish to access in the scene here. 
+     */
     loadScene(): void {}
 
-    /** A lifecycle method called strictly after loadScene(). Create any game objects you wish to use in the scene here. */
+    /** 
+     * A lifecycle method called strictly after loadScene(). Create any game objects you wish to use in the scene here. 
+     */
     startScene(): void {}
 
     /**
@@ -146,7 +152,9 @@ export default class Scene implements Updateable {
      */
     updateScene(deltaT: number): void {}
 
-    /** A lifecycle method that gets called on scene destruction. Specify which files you no longer need for garbage collection. */
+    /** 
+     * A lifecycle method that gets called on scene destruction. Specify which files you no longer need for garbage collection.
+     */
     unloadScene(): void {}
 
     update(deltaT: number): void {
