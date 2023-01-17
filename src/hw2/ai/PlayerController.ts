@@ -67,11 +67,8 @@ export default class PlayerController implements AI {
 		this.laserTimer = new Timer(2500, this.handleLaserTimerEnd, false);
 		this.invincibleTimer = new Timer(2000);
 		
-        // TODO Remove subscribing to events from the scene
-		this.receiver.subscribe(HW2Events.PLAYER_BUBBLE_COLLISION);
-		this.receiver.subscribe(HW2Events.PLAYER_MINE_COLLISION);
+        // TODO Subscribing to events from the scene
 		this.receiver.subscribe(HW2Events.SHOOT_LASER);
-        this.receiver.subscribe(HW2Events.PLAYER_WAS_HIT);
 
 		this.activate(options);
 	}
@@ -155,15 +152,9 @@ export default class PlayerController implements AI {
 
 		// Player looses a little bit of air each frame
 		this.currentAir = MathUtils.clamp(this.currentAir - deltaT, this.minAir, this.maxAir);
-		this.emitter.fireEvent(HW2Events.AIR_CHANGE, {curair: this.currentAir, maxair: this.maxAir});
 
 		// If the player is out of air - start subtracting from the player's health
 		this.currentHealth = this.currentAir <= this.minAir ? MathUtils.clamp(this.currentHealth - deltaT*2, this.minHealth, this.maxHealth) : this.currentHealth;
-
-		// If the player is out of air - then the players health changed - update the UI
-		if (this.currentAir <= this.minAir) {
-            this.emitter.fireEvent(HW2Events.HEALTH_CHANGE, {curhp: this.currentHealth, maxhp: this.maxHealth});
-        }
 	}
 	/**
 	 * This method handles all events that the reciever for the PlayerController is
@@ -175,14 +166,6 @@ export default class PlayerController implements AI {
 	 */
 	public handleEvent(event: GameEvent): void {
 		switch(event.type) {
-			case HW2Events.PLAYER_BUBBLE_COLLISION: {
-				this.handleBubbleCollisionEvent(event);
-				break;
-			}
-			case HW2Events.PLAYER_MINE_COLLISION: {
-				this.handleMineCollisionEvent(event);
-				break;
-			}
 			case HW2Events.SHOOT_LASER: {
 				this.handleShootLaserEvent(event);
 				break;
@@ -215,8 +198,8 @@ export default class PlayerController implements AI {
 	 */
 	protected handleBubbleCollisionEvent(event: GameEvent): void {
 		this.currentAir = MathUtils.clamp(this.currentAir + 1, this.minAir, this.maxAir);
-		this.emitter.fireEvent(HW2Events.AIR_CHANGE, {curair: this.currentAir, maxair: this.maxAir});
 	}
+
 	/**
 	 * This function handles a collision between a mine and the player
 	 * @param event a player-mine collision event
@@ -231,7 +214,6 @@ export default class PlayerController implements AI {
 		if (this.invincibleTimer.isStopped()) {
             this.owner.animation.playIfNotAlready(PlayerAnimations.HIT, false, HW2Events.PLAYER_WAS_HIT);
 			this.currentHealth = MathUtils.clamp(this.currentHealth - 1, this.minHealth, this.maxHealth);
-			this.emitter.fireEvent(HW2Events.HEALTH_CHANGE, {curhp: this.currentHealth, maxhp: this.maxHealth});
 			this.invincibleTimer.start();
 		}
 	}
@@ -259,20 +241,15 @@ export default class PlayerController implements AI {
 	 * @param vphs - the halfsize of the viewport 
 	 */
 	protected lockPlayer(player: CanvasNode, vpc: Vec2, vphs: Vec2): void {
-		if (player.position.x - player.sizeWithZoom.x <= vpc.x - vphs.x) {
-			player.position.x = vpc.x - vphs.x + player.sizeWithZoom.x;
-		}	
-		if (player.position.x + player.sizeWithZoom.x >= vpc.x + vphs.x) {
-			player.position.x = vpc.x + vphs.x - player.sizeWithZoom.x;
-		}
+		// TODO prevent the player from moving off the left/right side of the screen
 	}
 	/**
 	 * Function that wraps the player's y-coordinates, if they have moved halfway into the padded
 	 * region of one side of the viewport.
 	 * 
 	 * @param player - the GameNode associated with the player
-	 * @param vpc - the coordinates of the center of the viewport
-	 * @param vphs - the halfsize of the viewport
+	 * @param viewportCenter - the coordinates of the center of the viewport
+	 * @param viewportHalfSize - the halfsize of the viewport
 	 * 
 	 * @remarks
 	 * 
@@ -311,13 +288,8 @@ export default class PlayerController implements AI {
 	 *
 	 * 							X THIS IS OUT OF BOUNDS													
 	 */
-	protected wrapPlayer(player: CanvasNode, vpc: Vec2, vphs: Vec2): void {
-		if (player.position.y < vpc.y - vphs.y) {
-			player.position.y = vpc.y + vphs.y;
-		} 
-		if (player.position.y > vpc.y + vphs.y) {
-			player.position.y = vpc.y - vphs.y;
-		}
+	protected wrapPlayer(player: CanvasNode, viewportCenter: Vec2, viewportHalfSize: Vec2): void {
+		// TODO wrap the player around the top/bottom of the screen
 	}
 
 	/** 
