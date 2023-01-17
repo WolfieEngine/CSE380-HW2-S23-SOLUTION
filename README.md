@@ -118,10 +118,8 @@ class AnimatedSprite {
 ```
 If you want to know more about the different ways you can play animations using the animation manager, I recommend checking out the code in the AnimationManager class.
 
-## Emitting and Receiving Events
-The EventQueue is probably the most important piece of the Wolfie2D game engine. For hw2, you'll need to subscribe, handle, and emit events to and from the EventQueue to get the assignment working.
+## Dealing with Collisions
 
-> If you're familiar with web development or you've take CSE-316, I handle events from the EventQueue very similarly to how a reducer in a global store handles updating state :wink:
 
 ## Screen Despawning
 
