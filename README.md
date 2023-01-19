@@ -3,11 +3,13 @@
 - Professor Richard McKenna - richard@cs.stonybrook.edu
 ### Due Date: Friday, February 24, 2022
 
-## Introduction
-> The homework document is here as a reference. I suspect that as the semester progresses, things in the actual homework codebase will change. If you notice a discrepency between the homework doc and the comments/code in the assignment, please let me know.
+> I've put together this homework document as a resource/reference for you guys. If you guys think this thing is useful, please let me know. Alternatively, if you think these docs are a phenomenal waste of my time, please let me know.
+> 
+> I suspect that as the semester progresses things in the actual homework codebase will change. If you notice a discrepency between the homework doc and the comments/code in the assignment, please let me know. 
 >
-> -- Peter 
+> Peter 😜
 
+## Introduction
 In this assignment, you will make an infinite scroller game using the Typescript programming language and the Wolfie2D game engine. By completing this assignment, you should start to become familiar with the Wolfie2D game engine and develop an understanding of:
 
 * How to receive and respond to game events use Wolfie2D's EventQueue
@@ -17,8 +19,18 @@ In this assignment, you will make an infinite scroller game using the Typescript
 * Record and replay games in Wofie2D
 * Set random numbers/seeds in Wolfie2D
 
+## Reading Material
+Not to sound like a complete and total nerd, but [Game Programming Patterns](https://gameprogrammingpatterns.com/contents.html) (your textbook) is actually a really great textbook if you're interested in design patterns for games. For this homework assignment, these 4 chapters are probably the most relevant.
+
+* [Game-loop](https://gameprogrammingpatterns.com/game-loop.html)
+* [Update Method](https://gameprogrammingpatterns.com/update-method.html)
+* [Event Queue](https://gameprogrammingpatterns.com/event-queue.html)
+* [Object Pool](https://gameprogrammingpatterns.com/object-pool.html)
+
 ## Getting Started
-First, you'll need to clone the base code in this repository. After you've cloned the base code, run `npm install`. Once the node modules have installed, run `gulp` to transpile the hw2 base code. 
+First, you'll need to clone the base code in this repository and setup a repository on Github. After you've cloned the base code, run `npm install`. Once the node modules have installed, run `gulp` to transpile the hw2 base code. 
+
+> If you've never worked with git, Github, or a node project and you don't know how to get setup, please reach out to myself (Peter) or Kevin 🙂 
 
 ## Codebase Files
 The structure of the hw2 codebase looks similar to the tree diagram shown below.
@@ -72,9 +84,9 @@ Most of the work you'll be doing for homework 2 is in the `hw2` folder. You'll a
 
 ## Codebase Structure
 In general, the infinite scroller game for hw2 has a structure similar to the diagram shown below. The scene manages several collections of actors/objects (lasers, bubbles, mines, etc.) and each of those actors has some behavior (AI component) associated with. 
+
 ```mermaid
 classDiagram 
-    
     class HW2Scene
     HW2Scene : #Array~AnimatedSprite~ mines
     HW2Scene : #Array~Graphic~ bubbles
@@ -93,7 +105,8 @@ classDiagram
     BubbleActor "*" --> HW2Scene
     BubbleBehavior "1" --> BubbleActor
 ```
-HW2Scene is responsible for managing it's object pools, performing basic collision detection, moving the background, keeping track of the player's score, and updating the UI. Playing animations, handling collisions, and updating the state of our actors (player, mines, bubbles, lasers) is delegated to AI component of the actor. 
+
+The HW2Scene is responsible for managing it's object pools, performing basic collision detection, moving the background, keeping track of the player's score, and updating the UI. Playing animations, handling collisions, and updating the state of our actors (player, mines, bubbles, lasers) is delegated to each actors AI component.
 
 ## Loading Assets
 Loading assets into Wolfie2D is done through the ResourceManager class. All scenes have a field called `load` that maintains a reference to the ResourceManager. If you have a resource or asset that needs to be loaded in before starting a scene, you should use the ResourceManager to load in the asset in the `loadScene()` lifecycle method. 
