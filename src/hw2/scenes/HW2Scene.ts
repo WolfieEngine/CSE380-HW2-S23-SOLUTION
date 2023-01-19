@@ -30,15 +30,22 @@ import { GameEventType } from "../../Wolfie2D/Events/GameEventType";
 import BasicRecording from "../../Wolfie2D/Playback/BasicRecording";
 
 import { HW2Events } from "../HW2Events";
+import Layer from "../../Wolfie2D/Scene/Layer";
 
 /**
- * An enum for the layers for a HW3Scene
+ * A type for layers in the HW3Scene. It seems natural to want to use some kind of enum type to
+ * represent the different layers in the HW3Scene, however, it is generally bad practice to use
+ * Typescripts enums. As an alternative, I'm using a const object.
+ * 
+ * @author PeteyLumpkins
+ * 
+ * {@link https://www.typescriptlang.org/docs/handbook/enums.html#objects-vs-enums}
  */
-enum HW3Layers {
-	PRIMARY = "PRIMARY",
-	BACKGROUND = "BACKGROUND", 
-	UI = "UI"
-}
+export const HW3Layers = {
+	PRIMARY: "PRIMARY",
+	BACKGROUND: "BACKGROUND", 
+	UI: "UI"
+} as const;
 
 /**
  * This is the main scene for our game. 
@@ -54,8 +61,6 @@ export default class HW2Scene extends Scene {
     // The key and path to the background sprite
 	public static BACKGROUND_KEY = "BACKGROUND"
     public static BACKGROUND_PATH = "hw2_assets/sprites/WavyBlueLines.png"
-
-
 
     // A flag to indicate whether or not this scene is being recorded
     private recording: boolean;
@@ -103,7 +108,7 @@ export default class HW2Scene extends Scene {
 	// The padding of the world
 	private worldPadding: Vec2;
 
-	/** Scene methods */
+	/** Scene lifecycle methods */
 
 	/**
 	 * @see Scene.initScene
@@ -164,7 +169,6 @@ export default class HW2Scene extends Scene {
 		    this.emitter.fireEvent(GameEventType.START_RECORDING, {recording: new BasicRecording(HW2Scene, {seed: this.seed, recording: false})});
         }
 	}
-
 	/**
 	 * @see Scene.updateScene 
 	 */
@@ -189,6 +193,11 @@ export default class HW2Scene extends Scene {
 		for (let mine of this.mines) if (mine.visible) this.handleScreenDespawn(mine);
 		for (let bubble of this.bubbles) if (bubble.visible) this.handleScreenDespawn(bubble);
 	}
+    /**
+     * Unload or keep assets from the scene
+     */
+    public override unloadScene(): void {}
+
 
 
 	/**
@@ -421,8 +430,8 @@ export default class HW2Scene extends Scene {
 	 * 
 	 * @remarks
 	 * 
-	 * This method should attempts to retrieve a laser object from the object-pool
-	 * of laser and spawn it, starting at the specified position. 
+	 * This method should attempt to retrieve a laser object from the object-pool
+	 * of lasers and spawn it, starting at the specified position. 
 	 * 
 	 * If there are no lasers in the object pool, then a laser should not be spawned. 
 	 * Otherwise the laser should be spawned starting at the specified position and 
@@ -494,6 +503,37 @@ export default class HW2Scene extends Scene {
 
 		}
 	}
+    /**
+	 * This method handles spawning a bubble from the object-pool of bubbles
+	 * 
+	 * @remark
+	 * 
+	 * If there are no bubbles in the object-pool, then a bubble shouldn't be spawned and 
+	 * the bubble-spawn timer should not be reset. Otherwise a bubble should be spawned
+	 * and the bubble-spawn timer should be reset.
+	 * 
+	 * Bubbles should randomly spawn inside of the padded area of the viewport just below
+	 * the visible region of the viewport. A visualization of the padded viewport is shown 
+     * below. o's represent valid bubble spawn locations. X's represent invalid locations.
+	 * 
+	 * 
+	 * 					 X	 THIS IS OUT OF BOUNDS
+	 * 			 _______________________________________________
+	 * 			|	 THIS IS THE PADDED REGION (OFF SCREEN)		|
+	 * 			|						X					X	|
+	 * 			|		 _______________________________		|
+	 * 			|		|								|		|
+	 * 			|		|								|		|
+	 *	 		|		|	  THIS IS THE VISIBLE		|		|
+	 * 		X	|	X	|			 REGION				|	X	|   X 
+	 * 			|		|								|		|
+	 * 			|		|		X						|		|
+	 * 			|		|_______________________________|		|
+	 * 			|			o			o			o		X	|
+	 * 			|_______________________________________________|
+	 * 
+	 * 							X THIS IS OUT OF BOUNDS
+	 */
 	protected spawnBubble(): void {
 		let bubble: Graphic = this.bubbles.find((bubble: Graphic) => { return !bubble.visible; });
 
@@ -548,7 +588,7 @@ export default class HW2Scene extends Scene {
 	 * 
 	 * It may be helpful to make your own drawings while figuring out the math for this part.
 	 */
-	public handleScreenDespawn(node: CanvasNode): void {
+	protected handleScreenDespawn(node: CanvasNode): void {
 		
 		if (!node.collisionShape.getBoundingRect().overlaps(this.viewport.getView())) {
 			node.visible = false;
@@ -560,8 +600,8 @@ export default class HW2Scene extends Scene {
 	/**
 	 * This method handles updating the player's healthbar in the UI.
 	 * 
-	 * @param curhp the current health of the player
-	 * @param maxhp the maximum amount of health the player can have
+	 * @param currentHealth the current health of the player
+	 * @param maxHealth the maximum amount of health the player can have
 	 * 
 	 * @remarks
 	 * 
@@ -587,19 +627,19 @@ export default class HW2Scene extends Scene {
 	 * @see Color for more information about colors
 	 * @see Label for more information about labels 
 	 */
-	protected handleHealthChange(curhp: number, maxhp: number): void {
-		let unit = this.healthBarBg.size.x / maxhp;
+	protected handleHealthChange(currentHealth: number, maxHealth: number): void {
+		let unit = this.healthBarBg.size.x / maxHealth;
 
-		this.healthBar.size.set(this.healthBarBg.size.x - unit * (maxhp - curhp), this.healthBarBg.size.y);
-		this.healthBar.position.set(this.healthBarBg.position.x - (unit / 2) * (maxhp - curhp), this.healthBarBg.position.y);
+		this.healthBar.size.set(this.healthBarBg.size.x - unit * (maxHealth - currentHealth), this.healthBarBg.size.y);
+		this.healthBar.position.set(this.healthBarBg.position.x - (unit / 2) * (maxHealth - currentHealth), this.healthBarBg.position.y);
 
-		this.healthBar.backgroundColor = curhp < maxhp * 1/4 ? Color.RED: curhp < maxhp * 3/4 ? Color.YELLOW : Color.GREEN;
+		this.healthBar.backgroundColor = currentHealth < maxHealth * 1/4 ? Color.RED: currentHealth < maxHealth * 3/4 ? Color.YELLOW : Color.GREEN;
 	}
 	/**
 	 * This method handles updating the player's air-bar in the UI.
 	 * 
-	 * @param curair the current amount of air the player has
-	 * @param maxair the maximum amount of air the player can have
+	 * @param currentAir the current amount of air the player has
+	 * @param maxAir the maximum amount of air the player can have
 	 * 
 	 * @remarks
 	 * 
@@ -620,16 +660,16 @@ export default class HW2Scene extends Scene {
 	 * 
 	 * @see Label for more information about labels
 	 */
-	protected handleAirChange(curair: number, maxair: number): void {
-		let unit = this.airBarBg.size.x / maxair;
-		this.airBar.size.set(this.airBarBg.size.x - unit * (maxair - curair), this.airBarBg.size.y);
-		this.airBar.position.set(this.airBarBg.position.x - (unit / 2) * (maxair - curair), this.airBarBg.position.y);
+	protected handleAirChange(currentAir: number, maxAir: number): void {
+		let unit = this.airBarBg.size.x / maxAir;
+		this.airBar.size.set(this.airBarBg.size.x - unit * (maxAir - currentAir), this.airBarBg.size.y);
+		this.airBar.position.set(this.airBarBg.position.x - (unit / 2) * (maxAir - currentAir), this.airBarBg.position.y);
 	}
 	/**
 	 * This method handles updating the charge of player's laser in the UI.
 	 * 
-	 * @param curchrg the current number of charges the player's laser has
-	 * @param maxchrg the maximum amount of charges the player's laser can have
+	 * @param currentCharge the current number of charges the player's laser has
+	 * @param maxCharge the maximum amount of charges the player's laser can have
 	 * 
 	 * @remarks
 	 * 
@@ -675,11 +715,11 @@ export default class HW2Scene extends Scene {
 	 * @see Color for more information about color
 	 * @see Label for more information about labels
 	 */
-	protected handleChargeChange(curchrg: number, maxchrg: number): void {
-		for (let i = 0; i < curchrg && i < this.chrgBarLabels.length; i++) {
+	protected handleChargeChange(currentCharge: number, maxCharge: number): void {
+		for (let i = 0; i < currentCharge && i < this.chrgBarLabels.length; i++) {
 			this.chrgBarLabels[i].backgroundColor = Color.GREEN;
 		}
-		for (let i = curchrg; i < this.chrgBarLabels.length; i++) {
+		for (let i = currentCharge; i < this.chrgBarLabels.length; i++) {
 			this.chrgBarLabels[i].backgroundColor = Color.RED;
 		}
 	}

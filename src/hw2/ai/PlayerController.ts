@@ -14,11 +14,11 @@ import { HW2Controls } from "../HW2Controls";
 
 import CanvasNode from "../../Wolfie2D/Nodes/CanvasNode";
 
-enum PlayerAnimations {
-    IDLE = "IDLE",
-    HIT = "HIT",
-    DEATH = "DEATH"
-}
+export const PlayerAnimations = {
+    IDLE: "IDLE",
+    HIT: "HIT",
+    DEATH: "DEATH"
+} as const;
 
 
 /**
@@ -242,7 +242,7 @@ export default class PlayerController implements AI {
 		this.laserTimer.reset();
 		this.laserTimer.start();
 	}
-
+    
     protected handlePlayerHitEvent(event: GameEvent): void {
         this.owner.animation.play(PlayerAnimations.IDLE, true);
     }

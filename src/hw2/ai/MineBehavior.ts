@@ -7,10 +7,10 @@ import AnimatedSprite from "../../Wolfie2D/Nodes/Sprites/AnimatedSprite";
 import Timer from "../../Wolfie2D/Timing/Timer";
 import { HW2Events } from "../HW2Events";
 
-export enum MineAnimations {
-    IDLE = "IDLE",
-    EXPLODING = "EXPLODING"
-}
+export const MineAnimations = {
+    IDLE: "IDLE",
+    EXPLODING: "EXPLODING"
+} as const;
 
 /**
  * A class that represents a set of behavior for the mines.
