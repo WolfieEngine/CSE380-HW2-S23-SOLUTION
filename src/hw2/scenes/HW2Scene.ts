@@ -159,15 +159,6 @@ export default class HW2Scene extends Scene {
 		this.receiver.subscribe(HW2Events.FIRING_LASER);
 
         // TODO Remove the start recording and setting the random seed here!
-
-		// Set the seed in RandUtils to the seed for the game
-		RandUtils.seed = this.seed;
-
-        // If we're recording - send a signal to the playback system to start recording
-        if (this.recording) {
-		    // Send the start recording event
-		    this.emitter.fireEvent(GameEventType.START_RECORDING, {recording: new BasicRecording(HW2Scene, {seed: this.seed, recording: false})});
-        }
 	}
 	/**
 	 * @see Scene.updateScene 
