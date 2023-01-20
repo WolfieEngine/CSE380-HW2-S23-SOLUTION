@@ -219,8 +219,7 @@ public static checkAABBtoCircleCollision(aabb: AABB, circle: Circle): boolean {
 ```
 
 ## Part 4 - Spawning/Despawning Objects
-
-> For this part, you'll have to work with the `Viewport` class to figure out where to spawn/despawn the bubbles and the mines. All classes extending the base Scene class have a field called `viewport` and a method called `getViewport()` that returns a reference to the viewport.
+For part 4, you'll have to work with the `Viewport` class to figure out where to spawn/despawn the bubbles and the mines. All classes extending the base Scene class have a field called `viewport` and a method called `getViewport()` that returns a reference to the viewport.
 
 ### Part 4.1 - Spawning Bubbles
 Inside the HW2Scene class, there is a method called `spawnBubble()` that you must implement. The method finds a bubble object not currently in use and spawns it in, just outside the viewport.
