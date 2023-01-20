@@ -133,10 +133,58 @@ If you want to know more about the different ways you can play animations using 
 
 ## Dealing with Collisions
 
+### Player-Bubble Collisions
+Inside of the HW2Scene class, you'll have to do some manual collision detection between the bubbles and the player's sprite.
+
+```typescript
+public handleBubblePlayerCollisions(): number {
+    // TODO Handle checking for collisions between the bubbles and the player
+    return;
+}
+```
+
+When a collision is detected between the player and a bubble, two things should happen:
+
+1. The player's total "air" should be increased by 1
+2. The bubble should be popped and returned to it's object pool
+
+Where you respond to collision is up to you. Additionally, the collision type between the player and a bubble is an AABB to Circle collision. To check for these collisions, you'll have to implement the static method `checkAABBtoCircleCollision()` method attached to the HW2Scene class.
+
+```typescript
+public static checkAABBtoCircleCollision(aabb: AABB, circle: Circle): boolean {
+	// TODO implement AABB to Circle collision detection
+}
+```
+
+### Player-Mine Collisions
+Inside of the HW2Scene class, there is a method called `handleMinePlayerCollisions(): number`. The method checks for collisions between the mines and the player every frame. 
+
+When a mine collides with the player, two things should happen:
+1. The player should lose a health point, play a "hurt" animation, and become invincible for 2 seconds.
+2. The mine should play it's explosion animation and be returned to it's object pool.
+
+You need to implement the first part. 
 
 ## Screen Despawning
+Inside the HW2Scene class, there is a method called `handleScreenDespawn(node: CanvasNode)` that you must implement. The method handles despawning any mines and bubbles that have moved beyond the padded region of the viewport, returning them to their object pools.
+```typescript
+public handleScreenDespawn(node: CanvasNode): void {
+	// TODO - despawn the game nodes when they move out of the padded viewport
+}
+```
 
 ## Wrapping and Locking
+Inside the HW2Scene class, there are two methods that need to be implemented to lock and wrap the player's position. 
+```typescript
+protected wrapPlayer(player: CanvasNode, viewportCenter: Vec2, viewportHalfSize: Vec2): void {
+	// TODO wrap the player around the top/bottom of the screen
+}
+```
+```typescript
+protected lockPlayer(player: CanvasNode, vpc: Vec2, vphs: Vec2): void {
+	// TODO prevent the player from moving off the left/right side of the screen
+}
+```
 When the player moves halfway off the top or bottom of the screen, the player's sprite should be "wrapped" around to the other side of the screen. For reference I have repurposed some old ascii art from last year's hw3. The o's represent locations where the player should be wrapped. The O's represent locations where the player should be wrapped to. The X's represent locations where the player shouldn't be wrapped.
 
 Ex. the player should be wrapped from o1 -> O1, from o2 -> O2, etc. 
@@ -184,7 +232,7 @@ Wolfie2D supports a basic replay system you can use to replay your games. For th
 
 ```typescript
 enum GameEventType {
-  /**
+  	/**
 	 * Start Recording event. Has data: {recording: Recording}
 	 */
 	START_RECORDING = "start_recording",
@@ -200,7 +248,6 @@ enum GameEventType {
 	PLAY_RECORDING = "play_recording",
 }
 ```
-
 
 A couple of notes about recording things:
 1. You'll need to make sure to save/keep track of the random seed for your recorded scene. When you go to replay your games, it should be pretty obvious if the random seed was not set correctly.
