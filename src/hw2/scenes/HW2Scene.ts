@@ -41,7 +41,7 @@ import Layer from "../../Wolfie2D/Scene/Layer";
  * 
  * {@link https://www.typescriptlang.org/docs/handbook/enums.html#objects-vs-enums}
  */
-export const HW3Layers = {
+export const HW2Layers = {
 	PRIMARY: "PRIMARY",
 	BACKGROUND: "BACKGROUND", 
 	UI: "UI"
@@ -135,12 +135,12 @@ export default class HW2Scene extends Scene {
 		this.worldPadding = new Vec2(64, 64);
 
 		// Create a background layer
-		this.addLayer(HW3Layers.BACKGROUND, 0);
+		this.addLayer(HW2Layers.BACKGROUND, 0);
 		this.initBackground();
 
 		// Create a layer to serve as our main game - Feel free to use this for your own assets
 		// It is given a depth of 5 to be above our background
-		this.addLayer(HW3Layers.PRIMARY, 5);
+		this.addLayer(HW2Layers.PRIMARY, 5);
 		// Initialize the player
 		this.initPlayer();
 		// Initialize the Timers
@@ -254,7 +254,7 @@ export default class HW2Scene extends Scene {
 	protected initPlayer(): void {
 		// Add in the player as an animated sprite
 		// We give it the key specified in our load function and the name of the layer
-		this.player = this.add.animatedSprite(HW2Scene.PLAYER_KEY, HW3Layers.PRIMARY);
+		this.player = this.add.animatedSprite(HW2Scene.PLAYER_KEY, HW2Layers.PRIMARY);
 		
 		// Set the player's position to the middle of the screen, and scale it down
 		this.player.position.set(this.viewport.getCenter().x, this.viewport.getCenter().y);
@@ -277,22 +277,22 @@ export default class HW2Scene extends Scene {
 	 */
 	protected initUI(): void {
 		// UILayer stuff
-		this.addUILayer(HW3Layers.UI);
+		this.addUILayer(HW2Layers.UI);
 
 		// HP Label
-		this.healthLabel = <Label>this.add.uiElement(UIElementType.LABEL, HW3Layers.UI, {position: new Vec2(50, 50), text: "HP "});
+		this.healthLabel = <Label>this.add.uiElement(UIElementType.LABEL, HW2Layers.UI, {position: new Vec2(50, 50), text: "HP "});
 		this.healthLabel.size.set(300, 30);
 		this.healthLabel.fontSize = 24;
 		this.healthLabel.font = "Courier";
 
 		// Air Label
-		this.airLabel = <Label>this.add.uiElement(UIElementType.LABEL, HW3Layers.UI, {position: new Vec2(50, 100), text: "Air"});
+		this.airLabel = <Label>this.add.uiElement(UIElementType.LABEL, HW2Layers.UI, {position: new Vec2(50, 100), text: "Air"});
 		this.airLabel.size.set(300, 30);
 		this.airLabel.fontSize = 24;
 		this.airLabel.font = "Courier";
 
 		// Charge Label
-		this.chrgLabel = <Label>this.add.uiElement(UIElementType.LABEL, HW3Layers.UI, {position: new Vec2(475, 50), text: "Lasers"});
+		this.chrgLabel = <Label>this.add.uiElement(UIElementType.LABEL, HW2Layers.UI, {position: new Vec2(475, 50), text: "Lasers"});
 		this.chrgLabel.size.set(300, 30);
 		this.chrgLabel.fontSize = 24;
 		this.chrgLabel.font = "Courier";
@@ -301,29 +301,29 @@ export default class HW2Scene extends Scene {
 		this.chrgBarLabels = new Array(4);
 		for (let i = 0; i < this.chrgBarLabels.length; i++) {
 			let pos = new Vec2(500 + (i + 1)*(300 / this.chrgBarLabels.length), 50)
-			this.chrgBarLabels[i] = <Label>this.add.uiElement(UIElementType.LABEL, HW3Layers.UI, {position: pos, text: ""});
+			this.chrgBarLabels[i] = <Label>this.add.uiElement(UIElementType.LABEL, HW2Layers.UI, {position: pos, text: ""});
 			this.chrgBarLabels[i].size = new Vec2(300 / this.chrgBarLabels.length, 25);
 			this.chrgBarLabels[i].backgroundColor = Color.GREEN;
 			this.chrgBarLabels[i].borderColor = Color.BLACK;
 		}
 
 		// HealthBar
-		this.healthBar = <Label>this.add.uiElement(UIElementType.LABEL, HW3Layers.UI, {position: new Vec2(225, 50), text: ""});
+		this.healthBar = <Label>this.add.uiElement(UIElementType.LABEL, HW2Layers.UI, {position: new Vec2(225, 50), text: ""});
 		this.healthBar.size = new Vec2(300, 25);
 		this.healthBar.backgroundColor = Color.GREEN;
 
 		// AirBar
-		this.airBar = <Label>this.add.uiElement(UIElementType.LABEL, HW3Layers.UI, {position: new Vec2(225, 100), text: ""});
+		this.airBar = <Label>this.add.uiElement(UIElementType.LABEL, HW2Layers.UI, {position: new Vec2(225, 100), text: ""});
 		this.airBar.size = new Vec2(300, 25);
 		this.airBar.backgroundColor = Color.CYAN;
 
 		// HealthBar Border
-		this.healthBarBg = <Label>this.add.uiElement(UIElementType.LABEL, HW3Layers.UI, {position: new Vec2(225, 50), text: ""});
+		this.healthBarBg = <Label>this.add.uiElement(UIElementType.LABEL, HW2Layers.UI, {position: new Vec2(225, 50), text: ""});
 		this.healthBarBg.size = new Vec2(300, 25);
 		this.healthBarBg.borderColor = Color.BLACK;
 
 		// AirBar Border
-		this.airBarBg = <Label>this.add.uiElement(UIElementType.LABEL, HW3Layers.UI, {position: new Vec2(225, 100), text: ""});
+		this.airBarBg = <Label>this.add.uiElement(UIElementType.LABEL, HW2Layers.UI, {position: new Vec2(225, 100), text: ""});
 		this.airBarBg.size = new Vec2(300, 25);
 		this.airBarBg.borderColor = Color.BLACK;
 
@@ -344,11 +344,11 @@ export default class HW2Scene extends Scene {
 	 * Initializes the background image sprites for the game.
 	 */
 	protected initBackground(): void {
-		this.bg1 = this.add.sprite(HW2Scene.BACKGROUND_KEY, HW3Layers.BACKGROUND);
+		this.bg1 = this.add.sprite(HW2Scene.BACKGROUND_KEY, HW2Layers.BACKGROUND);
 		this.bg1.scale.set(1.5, 1.5);
 		this.bg1.position.copy(this.viewport.getCenter());
 
-		this.bg2 = this.add.sprite(HW2Scene.BACKGROUND_KEY, HW3Layers.BACKGROUND);
+		this.bg2 = this.add.sprite(HW2Scene.BACKGROUND_KEY, HW2Layers.BACKGROUND);
 		this.bg2.scale.set(1.5, 1.5);
 		this.bg2.position = this.bg1.position.clone();
 		this.bg2.position.add(this.bg1.sizeWithZoom.scale(2, 0));
@@ -377,7 +377,7 @@ export default class HW2Scene extends Scene {
 		// Init bubble object pool
 		this.bubbles = new Array(10);
 		for (let i = 0; i < this.bubbles.length; i++) {
-			this.bubbles[i] = this.add.graphic(GraphicType.RECT, HW3Layers.PRIMARY, {position: new Vec2(0, 0), size: new Vec2(50, 50)});
+			this.bubbles[i] = this.add.graphic(GraphicType.RECT, HW2Layers.PRIMARY, {position: new Vec2(0, 0), size: new Vec2(50, 50)});
             
             // Give the bubbles a custom shader
 			this.bubbles[i].useCustomShader(BubbleShaderType.KEY);
@@ -395,7 +395,7 @@ export default class HW2Scene extends Scene {
 		// Init the object pool of mines
 		this.mines = new Array(15);
 		for (let i = 0; i < this.mines.length; i++){
-			this.mines[i] = this.add.animatedSprite(HW2Scene.MINE_KEY, HW3Layers.PRIMARY);
+			this.mines[i] = this.add.animatedSprite(HW2Scene.MINE_KEY, HW2Layers.PRIMARY);
 
 			// Make our mine inactive by default
 			this.mines[i].visible = false;
@@ -413,7 +413,7 @@ export default class HW2Scene extends Scene {
 		// Init the object pool of lasers
 		this.lasers = new Array(4);
 		for (let i = 0; i < this.lasers.length; i++) {
-			this.lasers[i] = this.add.graphic(GraphicType.RECT, HW3Layers.PRIMARY, {position: Vec2.ZERO, size: Vec2.ZERO})
+			this.lasers[i] = this.add.graphic(GraphicType.RECT, HW2Layers.PRIMARY, {position: Vec2.ZERO, size: Vec2.ZERO})
 			this.lasers[i].useCustomShader(LaserShaderType.KEY);
 			this.lasers[i].color = Color.RED;
 			this.lasers[i].visible = false;
