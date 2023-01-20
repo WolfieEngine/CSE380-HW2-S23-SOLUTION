@@ -11,20 +11,20 @@ import RandUtils from "../../Wolfie2D/Utils/RandUtils";
 import { GameEventType } from "../../Wolfie2D/Events/GameEventType";
 
 // Layers in the main menu
-enum MainMenuLayer {
-    MAIN_MENU = "MAIN_MENU", 
-    CONTROLS = "CONTROLS",
-    ABOUT = "ABOUT"
-}
+const MainMenuLayer = {
+    MAIN_MENU: "MAIN_MENU", 
+    CONTROLS: "CONTROLS",
+    ABOUT: "ABOUT"
+} as const
 
 // Events triggered in the main menu
-enum MainMenuEvent {
-    PLAY_GAME = "PLAY_GAME",
-	CONTROLS = "CONTROLS",
-	ABOUT = "ABOUT",
-	MENU = "MENU",
-    PLAY_RECORDING = "PLAY_RECORDING"
-}
+const MainMenuEvent = {
+    PLAY_GAME: "PLAY_GAME",
+	CONTROLS: "CONTROLS",
+	ABOUT: "ABOUT",
+	MENU: "MENU",
+    PLAY_RECORDING: "PLAY_RECORDING"
+} as const;
 
 export default class MainMenu extends Scene {
     // Layers, for multiple main menu screens
