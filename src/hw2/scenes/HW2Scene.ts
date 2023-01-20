@@ -711,24 +711,15 @@ export default class HW2Scene extends Scene {
 	 * checkAABBtoCircleCollision() method in the HW3Scene.
 	 * 
 	 * Collisions between the player and bubbles should be checked during each frame. If a collision 
-	 * is detected between the player and a bubble, the player should be notified of the collision via
-	 * the EventQueue. The bubble should be made invisible, returning it to the bubble object pool.
+	 * is detected between the player and a bubble, the player should get back some air (+1) and the
+     * bubble should be made invisible and returned to it's object pool.
 	 * 
-	 * @see HW3Scene.checkAABBtoCircleCollision the method to be used to check for a collision between
+	 * @see HW2Scene.checkAABBtoCircleCollision the method to be used to check for a collision between
 	 * an AABB and a Circle
-	 * 
-	 * @see HW3Events.PLAYER_BUBBLE_COLLISION the event to be fired when a collision between a mine 
-	 * and a player is detected.
 	 */
 	public handleBubblePlayerCollisions(): number {
-		let collisions = 0;
-		for (let bubble of this.bubbles) {
-			if (bubble.visible && HW2Scene.checkAABBtoCircleCollision(<AABB>this.player.collisionShape, <Circle>bubble.collisionShape)){
-				this.emitter.fireEvent(HW2Events.PLAYER_BUBBLE_COLLISION, {bubbleId: bubble.id});
-				collisions += 1;
-			}
-		}
-		return collisions;
+		// TODO check for collisions between the player and the bubbles
+        return;
 	}
 
 	/**
@@ -745,7 +736,7 @@ export default class HW2Scene extends Scene {
 	 * of the collision, and the mine should be made invisible. This returns the mine to it's
 	 * respective object-pool.
 	 * 
-	 * @see HW3Events.PLAYER_ROCK_COLLISION the event to be fired when a collision is detected
+	 * @see HW2Events.PLAYER_ROCK_COLLISION the event to be fired when a collision is detected
 	 * between a mine and the player
 	 */
 	public handleMinePlayerCollisions(): number {
@@ -808,11 +799,8 @@ export default class HW2Scene extends Scene {
 	 * @see MathUtils for more information about MathUtil functions
 	 */
 	public static checkAABBtoCircleCollision(aabb: AABB, circle: Circle): boolean {
-		let dist = circle.center.clone().sub(aabb.center);
-		dist.x = MathUtils.clamp(dist.x, -1*aabb.halfSize.x, aabb.halfSize.x);
-		dist.y = MathUtils.clamp(dist.y, -1*aabb.halfSize.y, aabb.halfSize.y);
-		dist.add(aabb.center);
-		return circle.containsPoint(dist);
+        // TODO implement collision detection for AABBs and Circles
+        return;
 	}
 
 	public handleTimers(): void {
