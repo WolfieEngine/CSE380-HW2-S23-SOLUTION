@@ -331,9 +331,14 @@ A couple of notes about recording things:
 2. Make sure you have some way to detect whether or not you should record the HW2Scene or not. The playback system does not support recordings of recordings.
 
 ## Part 7 - Shaders and WebGL
-For hw2, you have to implement some functionality in the fragement shader for the laser beams. First, you have to find a way to pass the color of the laser beam into the fragement shader. 
-
-> The color of the laser beam changes as the charge of the laser decreases. If you try to hard code the color of the laser into the fragment shader, it most likely, will not work.
+For hw2, you have to implement some functionality in the fragement shader for the laser beams. First, you have to find a way to pass the color of the laser beam into the fragement shader. In the main method of the fragment shader, the color has been hard coded to be just red.
+```c
+// TODO Need to somehow pass in the color from the laser shader type
+void main(){
+    gl_FragColor = vec4(255, 0, 0, 1.0);
+    gl_FragColor.a = linear_laser(v_Position);
+}
+```
 
 The second bit of functionality you have to implement in the fragement shader, is to turn the laser into a wave (something like a sin-wave). I have a method for computing the alpha value of the fragment based on the position of the vertex shader that I used in my solution. You can start there if you want, but don't feel restricted to the method I defined. 
 
