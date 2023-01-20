@@ -143,13 +143,6 @@ export default class PlayerController implements AI {
 		let movement = Vec2.UP.scaled(forwardAxis * this.currentSpeed).add(new Vec2(horizontalAxis * this.currentSpeed, 0));
 		this.owner.position.add(movement.scaled(deltaT));
 
-		let vp = this.owner.getScene().getViewport();
-
-		// Lock the players position 
-		this.lockPlayer(this.owner, vp.getCenter(), vp.getHalfSize());
-		// Wrap the players position
-		this.wrapPlayer(this.owner, vp.getCenter(), vp.getHalfSize());
-
 		// Player looses a little bit of air each frame
 		this.currentAir = MathUtils.clamp(this.currentAir - deltaT, this.minAir, this.maxAir);
 
@@ -229,68 +222,6 @@ export default class PlayerController implements AI {
     protected handlePlayerHitEvent(event: GameEvent): void {
         this.owner.animation.play(PlayerAnimations.IDLE, true);
     }
-
-	/**
-	 * Function for locking the player's coordinates. Player should not be able to move off the 
-	 * left or right side of the screen.
-	 * 
-	 * @see {Viewport} for more information about the viewport
-	 * 
-	 * @param player - the CanvasNode associated with the player
-	 * @param vpc - the coordinates of the center of the viewport
-	 * @param vphs - the halfsize of the viewport 
-	 */
-	protected lockPlayer(player: CanvasNode, vpc: Vec2, vphs: Vec2): void {
-		// TODO prevent the player from moving off the left/right side of the screen
-	}
-	/**
-	 * Function that wraps the player's y-coordinates, if they have moved halfway into the padded
-	 * region of one side of the viewport.
-	 * 
-	 * @param player - the GameNode associated with the player
-	 * @param viewportCenter - the coordinates of the center of the viewport
-	 * @param viewportHalfSize - the halfsize of the viewport
-	 * 
-	 * @remarks
-	 * 
-	 * Wrapping the player around the screen involves moving the player over from one side of the screen 
-	 * to the other side of the screen once the player has ventured too far into the padded region. To do
-	 * this, you will have to:
-	 * 
-	 * 1.) Check if the player has moved halfway out of the visible region in the y-direction
-	 * 2.) Update the player's position to the opposite side of the visible region
-	 * 
-	 * @see {Viewport} for more information about the viewport
-	 * 
-	 * For reference, a visualization of the padded viewport is shown below. The o's represent locations 
-	 * where the player should be wrapped. The O's represent locations where the player should be wrapped to. 
-	 * The X's represent locations where the player shouldn't be wrapped
-	 * 
-	 * Ex. the player should be wrapped from o1 -> O1, from o2 -> O2, etc. 
-	 * 
-	 * 
-	 * 					 X	 THIS IS OUT OF BOUNDS
-	 * 			 _______________________________________________
-	 * 			|	 THIS IS THE PADDED REGION (OFF SCREEN)		|
-	 * 			|												|
-	 * 			|											    |
-	 * 			|		 ___o1_______________O2_________		|
-	 * 			|		|								|		|
-	 * 			|		|								|		|
-	 *	 		|		|	  THIS IS THE VISIBLE		|		|
-	 * 		X	|	X	|			 REGION				|	X	|   X 
-	 * 			|		|								|		|
-	 * 			|		|		X						|		|
-	 * 			|		|___O1_______________o2_________|		|
-	 * 			|		   										|
-	 * 			|		   						   				|
-	 * 			|_______________________________________________|
-	 *
-	 * 							X THIS IS OUT OF BOUNDS													
-	 */
-	protected wrapPlayer(player: CanvasNode, viewportCenter: Vec2, viewportHalfSize: Vec2): void {
-		// TODO wrap the player around the top/bottom of the screen
-	}
 
 	/** 
 	 * A callback function that increments the number of charges the player's laser cannon has.

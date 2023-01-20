@@ -803,6 +803,71 @@ export default class HW2Scene extends Scene {
         return;
 	}
 
+    /** Methods for locking and wrapping nodes */
+
+    /**
+	 * Function that wraps the player's y-coordinates, if they have moved halfway into the padded
+	 * region of one side of the viewport.
+	 * 
+	 * @param player - the GameNode associated with the player
+	 * @param viewportCenter - the coordinates of the center of the viewport
+	 * @param viewportHalfSize - the halfsize of the viewport
+	 * 
+	 * @remarks
+	 * 
+	 * Wrapping the player around the screen involves moving the player over from one side of the screen 
+	 * to the other side of the screen once the player has ventured too far into the padded region. To do
+	 * this, you will have to:
+	 * 
+	 * 1.) Check if the player has moved halfway out of the visible region in the y-direction
+	 * 2.) Update the player's position to the opposite side of the visible region
+	 * 
+	 * @see {Viewport} for more information about the viewport
+	 * 
+	 * For reference, a visualization of the padded viewport is shown below. The o's represent locations 
+	 * where the player should be wrapped. The O's represent locations where the player should be wrapped to. 
+	 * The X's represent locations where the player shouldn't be wrapped
+	 * 
+	 * Ex. the player should be wrapped from o1 -> O1, from o2 -> O2, etc. 
+	 * 
+	 * 
+	 * 					 X	 THIS IS OUT OF BOUNDS
+	 * 			 _______________________________________________
+	 * 			|	 THIS IS THE PADDED REGION (OFF SCREEN)		|
+	 * 			|												|
+	 * 			|											    |
+	 * 			|		 ___o1_______________O2_________		|
+	 * 			|		|								|		|
+	 * 			|		|								|		|
+	 *	 		|		|	  THIS IS THE VISIBLE		|		|
+	 * 		X	|	X	|			 REGION				|	X	|   X 
+	 * 			|		|								|		|
+	 * 			|		|		X						|		|
+	 * 			|		|___O1_______________o2_________|		|
+	 * 			|		   										|
+	 * 			|		   						   				|
+	 * 			|_______________________________________________|
+	 *
+	 * 							X THIS IS OUT OF BOUNDS													
+	 */
+	protected wrapPlayer(player: CanvasNode, viewportCenter: Vec2, viewportHalfSize: Vec2): void {
+		// TODO wrap the player around the top/bottom of the screen
+	}
+
+    /**
+	 * Function for locking the player's coordinates. Player should not be able to move off the 
+	 * left or right side of the screen.
+	 * 
+	 * @see {Viewport} for more information about the viewport
+	 * 
+	 * @param player - the CanvasNode associated with the player
+	 * @param viewportCenter - the coordinates of the center of the viewport
+	 * @param viewportHalfSize - the halfsize of the viewport 
+	 */
+	protected lockPlayer(player: CanvasNode, viewportCenter: Vec2, viewportHalfSize: Vec2): void {
+		// TODO prevent the player from moving off the left/right side of the screen
+	}
+
 	public handleTimers(): void {
 		// If the mine timer is stopped, try to spawn a mine
 		if (this.mineSpawnTimer.isStopped()) {
