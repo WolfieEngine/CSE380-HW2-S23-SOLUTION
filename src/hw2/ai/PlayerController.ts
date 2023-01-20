@@ -45,8 +45,6 @@ export default class PlayerController implements AI {
 
 	/** A timer for charging the player's laser cannon thing */
 	private laserTimer: Timer;
-	/** A timer for handling the player's invincible frames */
-	private invincibleTimer: Timer;
 
 	// A receiver and emitter to hook into the event queue
 	private receiver: Receiver;
@@ -65,7 +63,6 @@ export default class PlayerController implements AI {
 		this.emitter = new Emitter();
 
 		this.laserTimer = new Timer(2500, this.handleLaserTimerEnd, false);
-		this.invincibleTimer = new Timer(2000);
 		
         // TODO Subscribing to events from the scene
 		this.receiver.subscribe(HW2Events.SHOOT_LASER);
@@ -163,10 +160,6 @@ export default class PlayerController implements AI {
 				this.handleShootLaserEvent(event);
 				break;
 			}
-            case HW2Events.PLAYER_WAS_HIT: {
-                this.handlePlayerHitEvent(event);
-                break;
-            }
 			default: {
 				throw new Error(`Unhandled event of type: ${event.type} caught in PlayerController`);
 			}
@@ -190,7 +183,7 @@ export default class PlayerController implements AI {
 	 * the scene should be notified of the change to the amount of air the player has left.
 	 */
 	protected handleBubbleCollisionEvent(event: GameEvent): void {
-		this.currentAir = MathUtils.clamp(this.currentAir + 1, this.minAir, this.maxAir);
+		// TODO remove this method for handling player-bubble collisions
 	}
 
 	/**
@@ -204,11 +197,7 @@ export default class PlayerController implements AI {
 	 * the player is invincible, then the player should not take any damage. 
 	 */
 	protected handleMineCollisionEvent(event: GameEvent): void {
-		if (this.invincibleTimer.isStopped()) {
-            this.owner.animation.playIfNotAlready(PlayerAnimations.HIT, false, HW2Events.PLAYER_WAS_HIT);
-			this.currentHealth = MathUtils.clamp(this.currentHealth - 1, this.minHealth, this.maxHealth);
-			this.invincibleTimer.start();
-		}
+		// TODO remove this method for handling player-mine collisions
 	}
 	/**
 	 * This function handles when the player successfully shoots a laser.
@@ -218,10 +207,6 @@ export default class PlayerController implements AI {
 		this.laserTimer.reset();
 		this.laserTimer.start();
 	}
-    
-    protected handlePlayerHitEvent(event: GameEvent): void {
-        this.owner.animation.play(PlayerAnimations.IDLE, true);
-    }
 
 	/** 
 	 * A callback function that increments the number of charges the player's laser cannon has.
