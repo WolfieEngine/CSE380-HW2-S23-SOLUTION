@@ -82,37 +82,9 @@ The structure of the hw2 codebase looks similar to the tree diagram shown below.
 ```
 Most of the work you'll be doing for homework 2 is in the `hw2` folder. You'll also have to work with the some shader code. The shader files for homework 2 are under `hw2_assets/shaders`.
 
-## Codebase Structure
-In general, the infinite scroller game for hw2 has a structure similar to the diagram shown below. The scene manages several collections of actors/objects (lasers, bubbles, mines, etc.) and each of those actors has some behavior (AI component) associated with. 
-
-```mermaid
-classDiagram 
-    class HW2Scene
-    HW2Scene : #Array~AnimatedSprite~ mines
-    HW2Scene : #Array~Graphic~ bubbles
-    HW2Scene : #Array~Graphic~ lasers
-    HW2Scene : #AnimatedSprite player
- 
-    PlayerActor "1" --> HW2Scene
-    PlayerController "1" --> PlayerActor
-    
-    MineActor "*" --> HW2Scene
-    MineBehavior "1" --> MineActor
-    
-    LaserActor "*" --> HW2Scene
-    LaserBehavior "1" --> LaserActor
-    
-    BubbleActor "*" --> HW2Scene
-    BubbleBehavior "1" --> BubbleActor
-```
-
-The HW2Scene is responsible for managing it's object pools, performing basic collision detection, moving the background, keeping track of the player's score, and updating the UI. Playing animations, handling collisions, and updating the state of our actors (player, mines, bubbles, lasers) is delegated to each actors AI component.
-
 ## Part 1 - Loading Assets
 
 For HW2, most of the assets for the game have been loaded in for you. You just need to load in your custom animated sprite from hw1 in place of the yellow barrel with windows that is my submarine.
-
-> Critique my artistry all you want, but be warned; If you make fun of my art, I will make fun of yours 😈
 
 Loading assets into Wolfie2D is done through the ResourceManager class. All scenes have a field called `load` that maintains a reference to the ResourceManager. If you have a resource or asset that needs to be loaded in before starting a scene, you should use the ResourceManager to load the asset in the `loadScene()` lifecycle method. 
 
@@ -324,24 +296,10 @@ enum GameEventType {
 	PLAY_RECORDING = "play_recording",
 }
 ```
-
-A couple of notes about recording things:
-1. You'll need to make sure to save/keep track of the random seed for your recorded scene. When you go to replay your games, it should be pretty obvious if the random seed was not set correctly.
-2. Make sure you have some way to detect whether or not you should record the HW2Scene or not. The playback system does not support recordings of recordings.
+TBD
 
 ## Part 7 - Shaders and WebGL
-For hw2, you have to implement some functionality in the fragement shader for the laser beams. First, you have to find a way to pass the color of the laser beam into the fragement shader. In the main method of the fragment shader, the color has been hard coded to be just red.
-```c
-// TODO Need to somehow pass in the color from the laser shader type
-void main(){
-    gl_FragColor = vec4(255, 0, 0, 1.0);
-    gl_FragColor.a = linear_laser(v_Position);
-}
-```
-
-The second bit of functionality you have to implement in the fragement shader, is to turn the laser into a wave (something like a sin-wave). I have a method for computing the alpha value of the fragment based on the position of the vertex shader that I used in my solution. You can start there if you want, but don't feel restricted to the method I defined. 
-
-> Debugging shader code is tricky because there are no print statements. The best advice I can offer is to try and use different colors to figure out what's going on behind the scenes.
+TBD
 
 ## Bugs
 Where there's code, there's bugs. If you guys think you've run into a bug in the assignments, feel free to reach out to me on piazza, at my office hours, or on discord. 
