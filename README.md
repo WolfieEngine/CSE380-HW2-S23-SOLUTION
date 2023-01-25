@@ -301,7 +301,22 @@ enum GameEventType {
 TBD
 
 ## Part 7 - Shaders and WebGL
-TBD
+For HW2, you have to implement some functionality in the fragement shader for the laser beams. 
+
+### Part 7.1 - Color
+First, you have to find a way to pass the color of the laser beam into the fragement shader. In the main method of the fragment shader, the color has been hard coded to be just red. The color of the laserbeam should come from 
+
+```c
+// TODO Need to somehow pass in the color from the laser shader type
+void main(){
+    gl_FragColor = vec4(255, 0, 0, 1.0);
+    gl_FragColor.a = linear_laser(v_Position);
+}
+```
+
+The second bit of functionality you have to implement in the fragement shader, is to turn the laser into a wave (something like a sin-wave). I have a method for computing the alpha value of the fragment based on the position of the vertex shader that I used in my solution. You can start there if you want, but don't feel restricted to the method I defined. 
+
+> Debugging shader code is tricky because there are no print statements. The best advice I can offer is to try and use different colors to figure out what's going on behind the scenes.
 
 ## Bugs
 Where there's code, there's bugs. If you guys think you've run into a bug in the assignments, feel free to reach out to me on piazza, at my office hours, or on discord. 
