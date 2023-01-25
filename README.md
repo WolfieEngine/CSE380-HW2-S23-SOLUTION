@@ -280,6 +280,7 @@ Wolfie2D supports a basic replay system you can use to replay your games. For th
 
 ```typescript
 enum GameEventType {
+
   	/**
 	 * Start Recording event. Has data: {recording: Recording}
 	 */
@@ -294,6 +295,7 @@ enum GameEventType {
 	 * Play Recording event. Has data: {}
 	 */
 	PLAY_RECORDING = "play_recording",
+	
 }
 ```
 TBD
