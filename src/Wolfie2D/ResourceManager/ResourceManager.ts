@@ -94,7 +94,7 @@ export default class ResourceManager {
     private resourcesToUnload: Array<ResourceReference>;
 
     /** A list of resources to keep until further notice */
-    private resourcesToKeep: Array<ResourceReference>;
+    private resourcesToKeep: Record<string,Set<String>>
 
     private constructor(){
         this.loading = false;
@@ -136,7 +136,7 @@ export default class ResourceManager {
         this.gl_Buffers = new Map();
 
         this.resourcesToUnload = new Array();
-        this.resourcesToKeep = new Array();
+        this.resourcesToKeep = {};
     };
 
     /* ######################################## SINGLETON ########################################*/
@@ -172,6 +172,7 @@ export default class ResourceManager {
      * @param path The path to the image to load
      */
     public image(key: string, path: string): void {
+        if(this.resourcesToKeep[ResourceType.IMAGE] !== undefined && this.resourcesToKeep[ResourceType.IMAGE].has(key))return;
         this.loadonly_imageLoadingQueue.enqueue({key: key, path: path});
     }
 
@@ -202,6 +203,7 @@ export default class ResourceManager {
      * @param path The path to the spritesheet to load
      */
     public spritesheet(key: string, path: string): void {
+        if(this.resourcesToKeep[ResourceType.SPRITESHEET] !== undefined)return;
         this.loadonly_spritesheetLoadingQueue.enqueue({key: key, path: path});
     }
 
@@ -309,7 +311,6 @@ export default class ResourceManager {
         this.loadonly_typesToLoad = 5;
 
         this.loading = true;
-
         // Load everything in the queues. Tilemaps have to come before images because they will add new images to the queue
         this.loadTilemapsFromQueue(() => {
             console.log("Loaded Tilemaps");
@@ -321,7 +322,6 @@ export default class ResourceManager {
                         console.log("Loaded Audio");
                         this.loadObjectsFromQueue(() => {
                             console.log("Loaded Objects");
-                            
                             if(this.gl_WebGLActive){
                                 this.gl_LoadShadersFromQueue(() => {
                                     console.log("Loaded Shaders");
@@ -347,13 +347,15 @@ export default class ResourceManager {
     /* ######################################## UNLOAD FUNCTION ########################################*/
     
     private keepResource(key: string, type: ResourceType): void {
-        console.log("Keep resource...");
         for(let i = 0; i < this.resourcesToUnload.length; i++){
             let resource = this.resourcesToUnload[i];
             if(resource.key === key && resource.resourceType === type){
                 console.log("Found resource " + key + " of type " + type + ". Keeping.");
-                let resourceToMove = this.resourcesToUnload.splice(i, 1);
-                this.resourcesToKeep.push(...resourceToMove);
+                this.resourcesToUnload.splice(i, 1);
+                if(this.resourcesToKeep[type] == undefined){
+                    this.resourcesToKeep[type] = new Set();
+                }
+                this.resourcesToKeep[type].add(key);
                 return;
             }
         }
@@ -367,9 +369,13 @@ export default class ResourceManager {
         this.justLoaded = false;
 
         for(let resource of this.resourcesToUnload){
+            if(this.resourcesToKeep[resource.resourceType] != undefined && this.resourcesToKeep[resource.resourceType].has(resource.key)){
+                continue;
+            }
             // Unload the resource
             this.unloadResource(resource);
         }
+        this.resourcesToUnload = [];
     }
 
     private unloadResource(resource: ResourceReference): void {
@@ -393,10 +399,10 @@ export default class ResourceManager {
             case ResourceType.JSON:
                 this.jsonObjects.delete(resource.key);
                 break;
-            /*case ResourceType.SHADER:
+            case ResourceType.SHADER:
                 this.gl_ShaderPrograms.get(resource.key).delete(this.gl);
                 this.gl_ShaderPrograms.delete(resource.key);
-                break;*/
+                break;
         }
 
         // Delete any dependencies
@@ -757,6 +763,11 @@ export default class ResourceManager {
 
         // Increment the key
         this.gl_NextTextureID += 1;
+        // if overflow occurs, reset to 0
+        // TODO: This is a temporary solution - we should be able to have more than 8 textures.
+        if(this.gl_NextTextureID > 8){
+            this.gl_NextTextureID = 0;
+        }
     }
 
     private getTextureID(id: number): number {
@@ -809,7 +820,8 @@ export default class ResourceManager {
         paths.key = key;
         paths.vpath = vShaderFilepath;
         paths.fpath = fShaderFilepath;
-
+        // see if 
+        console.log("put " + key + " in queue as shader");
         this.loadonly_gl_ShaderLoadingQueue.enqueue(paths);
     }
 
@@ -817,8 +829,8 @@ export default class ResourceManager {
      * Tells the resource manager to keep this resource
      * @param key The key of the resource
      */
-     public keepShader(key: string): void {
-        this.keepResource(key, ResourceType.IMAGE);
+    public keepShader(key: string): void {
+        this.keepResource(key, ResourceType.SHADER);
     }
 
     private gl_LoadShadersFromQueue(onFinishLoading: Function): void {
