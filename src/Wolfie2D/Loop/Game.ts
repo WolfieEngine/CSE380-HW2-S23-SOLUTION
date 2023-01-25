@@ -23,6 +23,7 @@ import RecordingManager from "../Playback/PlaybackManager";
 import InputReplayer from "../Playback/BasicReplayer";
 import { TimerState } from "../Timing/Timer";
 import PlaybackManager from "../Playback/PlaybackManager";
+import ShaderRegistry from "../Registry/Registries/ShaderRegistry";
 
 /**
  * The main loop of the game engine.
@@ -150,6 +151,11 @@ export default class Game {
         this.resourceManager.loadResourcesFromQueue(() => {
             // When we're done loading, start the loop
             console.log("Finished Preload - loading first scene");
+            // need to also keep the text shaders.
+            this.resourceManager.keepShader(ShaderRegistry.POINT_SHADER);
+            this.resourceManager.keepShader(ShaderRegistry.LABEL_SHADER);
+            this.resourceManager.keepShader(ShaderRegistry.RECT_SHADER);
+            this.resourceManager.keepShader(ShaderRegistry.SPRITE_SHADER);
             this.sceneManager.changeToScene(InitialScene, {}, options);
             this.loop.start();
         });
