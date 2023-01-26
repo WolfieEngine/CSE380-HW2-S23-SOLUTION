@@ -35,6 +35,7 @@ export default class MineBehavior implements AI {
      */
     activate(options: Record<string, any>): void {
         this.speed = 100;
+        this.owner.animation.play(MineAnimations.IDLE, true);
     }
     /**
      * @see {AI.handleEvent}
@@ -63,7 +64,6 @@ export default class MineBehavior implements AI {
     destroy(): void { 
         
     }  
-    
     
 }
 
