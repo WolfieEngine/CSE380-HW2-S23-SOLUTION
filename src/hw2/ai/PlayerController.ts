@@ -121,7 +121,6 @@ export default class PlayerController implements AI {
 
         // If the player is out of hp - play the death animation
 		if (this.currentHealth <= this.minHealth) { 
-            this.owner.animation.playIfNotAlready(PlayerAnimations.DEATH, false, HW2Events.DEAD);
             return;
         }
 
@@ -172,33 +171,6 @@ export default class PlayerController implements AI {
 		this.receiver.destroy()
 	}
 
-	/**
-	 * This function handles a collision between a bubble and the player
-	 * @param event a player-bubble collision event
-	 * 
-	 * @remarks 
-	 * 
-	 * The players current amount of air should be incremented by 1. The current amount
-	 * of air should not exceed the maximum amount of air the player can have. The UI of
-	 * the scene should be notified of the change to the amount of air the player has left.
-	 */
-	protected handleBubbleCollisionEvent(event: GameEvent): void {
-		// TODO remove this method for handling player-bubble collisions
-	}
-
-	/**
-	 * This function handles a collision between a mine and the player
-	 * @param event a player-mine collision event
-	 * 
-	 * @remarks
-	 * 
-	 * This function decrements the player's health by 1. The player's health should not
-	 * fall below the player's minimum health, and the player should become invincible. If 
-	 * the player is invincible, then the player should not take any damage. 
-	 */
-	protected handleMineCollisionEvent(event: GameEvent): void {
-		// TODO remove this method for handling player-mine collisions
-	}
 	/**
 	 * This function handles when the player successfully shoots a laser.
 	 * @param event 
