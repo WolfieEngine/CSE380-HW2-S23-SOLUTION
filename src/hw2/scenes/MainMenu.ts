@@ -158,9 +158,7 @@ export default class MainMenu extends Scene {
                 break;
             }
             case MainMenuEvent.PLAY_RECORDING: {
-                this.emitter.fireEvent(GameEventType.PLAY_RECORDING, {
-                    onEnd: () => { this.emitter.fireEvent(GameEventType.CHANGE_SCENE, {scene: MainMenu, init: {}})}
-                });
+                // TODO play the recording here
                 break;
             }
             default: {
