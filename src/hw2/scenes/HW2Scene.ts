@@ -127,6 +127,18 @@ export default class HW2Scene extends Scene {
 		this.load.image(HW2Scene.BACKGROUND_KEY, HW2Scene.BACKGROUND_PATH);
 		// Load in the naval mine
 		this.load.spritesheet(HW2Scene.MINE_KEY, HW2Scene.MINE_PATH);
+		// Load in the shader for bubble.
+		this.load.shader(
+			BubbleShaderType.KEY,
+			BubbleShaderType.VSHADER,
+			BubbleShaderType.FSHADER
+		);
+		// Load in the shader for laser.
+    	this.load.shader(
+			LaserShaderType.KEY,
+			LaserShaderType.VSHADER, 
+			LaserShaderType.FSHADER
+    	);
 	}
 	/**
 	 * @see Scene.startScene
@@ -189,7 +201,14 @@ export default class HW2Scene extends Scene {
     /**
      * Unload or keep assets from the scene
      */
-    public override unloadScene(): void {}
+    public override unloadScene(): void {
+		// keep all resources.
+		// this.load.keepSpritesheet(HW2Scene.PLAYER_KEY);
+        // this.load.keepImage(HW2Scene.BACKGROUND_KEY);
+        // this.load.keepSpritesheet(HW2Scene.MINE_KEY);
+		// this.load.keepShader(BubbleShaderType.KEY);
+		// this.load.keepShader(LaserShaderType.KEY);
+	}
 
 
 
