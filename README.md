@@ -104,11 +104,13 @@ classDiagram
 The HW2Scene is responsible for managing it's object pools, performing basic collision detection, moving the background, keeping track of the player's score, and updating the UI. Playing animations, handling collisions, and updating the state of our actors (player, mines, bubbles, lasers) is delegated to each actors AI component.
 
 ## Part 1 - Playing Animations
-In HW2, the player's sprite should respond to various game events by playing its different animations. 
+In HW2, there are two animated sprites; the player and the mine. Each animated sprite should respond to various game events by playing its different animations. 
 
-- When the player takes damage from any source (mine or suffocation) the player's sprite should play its `HURT` animation if it's not already playing.
-- When the player's health reaches 0, the player should play its `DYING` animation. After the `DYING` animation has been played, the player's sprite should play its `DEAD` animation. 
+- When the player takes damage from any source (mine or suffocation) the player's sprite should play its `HIT` animation if it's not already playing.
+- When the player's health reaches 0, the player should play its `DEATH` animation. 
 - Otherwise, the player should play it's `IDLE` animation, if it's not already playing.
+- When the mine collides with the player, the mine should play it's `EXPLODING` animation.
+- Otherwise, the mine should play it's `IDLE` animation.
 
 All `AnimatedSprites` in Wolfie2D expose an AnimationManager that can be used to play animations associated with an animated sprite. 
 ```typescript
@@ -511,7 +513,7 @@ For HW2, it's up to you to record the events from the
 
 
 ## Part 7 - Shaders and WebGL
-You should notice that the laserbeam fires in a straight, red line with a little bit of a blurryness around the edge of the laser. For HW2, you'll have to change the implementation of the laser beam slightly.
+For HW2, you're tasked with adding some functionality to the submarines laserbeam. 
 
 ### Part 7.1 - Color
 First, find a way to pass the color of the laser beam into the fragement shader. In the main method of the fragment shader, the color has been hard coded to be just red. 
@@ -534,12 +536,12 @@ export default abstract class Graphic extends CanvasNode {
     // etc...
 }
 ```
-Inside the behavior (AI) for the laserbeam, the color of the laserbeam gradually changes from a redish color to a blueish color. If you successfully pass the color into the fragment shader, you should see the laserbeam fade to a purple/blue ish color.
+Inside the behavior (AI) for the laserbeam, the color of the laserbeam gradually changes from a redish color to a blue/purple ish color. If you successfully pass the color into the fragment shader, you should see the laserbeam fade to a purple/blue ish color.
 
 ### Part 7.2 - Sinwave
-Right now, the submarines laserbeam fires in a straight line. 
+Right now, the submarines laserbeam fires in a straight line. You have to change the laserbeam to look like a sinwave.
 
-In `laser.fshader` I have defined the function `float sinwave_laser(vec4 position)` that computes the alpha value for the color fragment based on a position (presumably from the vertex shader).
+In `laser.fshader` I have defined the function `float sinwave_laser(vec4 position)` that computes the alpha value for the color fragment based on a position (presumably from the vertex shader). The `float linear_laser(vec4 position)` also does this. 
 ```c
 /**
  *  This function generates the appropriate alpha value for the fragment color
@@ -568,6 +570,7 @@ float sinwave_laser(vec4 position) {
 ```
 
 > Debugging shader code is tricky because there are no print statements :scream: The best advice I can offer is to try and use different colors to figure out what's going on. 
+
 > In the function I use to generate the linear laser, I make use of a couple built-in glsl functions. You can find a list of all the built-in functions you can use in your shaders [here](https://registry.khronos.org/OpenGL-Refpages/gl4/index.php).
 
 ## Bugs
