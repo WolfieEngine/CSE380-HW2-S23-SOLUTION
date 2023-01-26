@@ -898,7 +898,6 @@ export default class HW2Scene extends Scene {
 		}
 		// If the game-over timer has run, change to the game-over scene
 		if (this.gameOverTimer.hasRun() && this.gameOverTimer.isStopped()) {
-			this.emitter.fireEvent(GameEventType.STOP_RECORDING, {});
 		 	this.sceneManager.changeToScene(GameOver, {
 				bubblesPopped: this.bubblesPopped, 
 				minesDestroyed: this.minesDestroyed,
@@ -908,8 +907,9 @@ export default class HW2Scene extends Scene {
 	}
 
 	/**
-	 * To create the illusion of a never ending desert road, we maintain two identical background and move them as the game progresses.
-	 * When one background is moved completely offscreen at the bottom, it will get moved back to the top to continue the cycle.
+	 * To create the illusion of an endless background, we maintain two identical background sprites and move them as the game 
+     * progresses. When one background is moved completely offscreen at the bottom, it will get moved back to the top to 
+     * continue the cycle.
 	 */
 	protected moveBackgrounds(deltaT: number): void {
 		let move = new Vec2(150, 0);
