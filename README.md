@@ -75,15 +75,41 @@ The structure of the hw2 codebase looks similar to the tree diagram shown below.
 │   └── main.ts
 └── tsconfig.json
 ```
+## Codebase Structure
+In general, the infinite scroller game for hw2 has a structure similar to the diagram shown below. The scene manages several collections of actors/objects (lasers, bubbles, mines, etc.) and each of those actors has some behavior (AI component) associated with. 
+bbleBehavior "1" --> BubbleActor
+
+```mermaid
+classDiagram 
+    class HW2Scene
+    HW2Scene : #Array~AnimatedSprite~ mines
+    HW2Scene : #Array~Graphic~ bubbles
+    HW2Scene : #Array~Graphic~ lasers
+    HW2Scene : #AnimatedSprite player
+ 
+    PlayerActor "1" --> HW2Scene
+    PlayerController "1" --> PlayerActor
+    
+    MineActor "*" --> HW2Scene
+    MineBehavior "1" --> MineActor
+    
+    LaserActor "*" --> HW2Scene
+    LaserBehavior "1" --> LaserActor
+    
+    BubbleActor "*" --> HW2Scene
+    BubbleBehavior "1" --> BubbleActor
+```
+
+The HW2Scene is responsible for managing it's object pools, performing basic collision detection, moving the background, keeping track of the player's score, and updating the UI. Playing animations, handling collisions, and updating the state of our actors (player, mines, bubbles, lasers) is delegated to each actors AI component.
+
 Most of the work you'll be doing for homework 2 is in the `hw2` folder. You'll also have to work with the some shader code. The shader files for homework 2 are under `hw2_assets/shaders`.
 
 ## Part 1 - Playing Animations
 In HW2, the player's sprite should respond to various game events by playing its different animations. 
 
 - When the player takes damage from any source (mine or suffocation) the player's sprite should play its `HURT` animation if it's not already playing.
-- While the player is moving, the player's sprite should play its `MOVING` animation if it's not already playing.
-- While the player is not moving (idling) the player's sprite should play its `IDLE` animation.
 - When the player's health reaches 0, the player should play its `DYING` animation. After the `DYING` animation has been played, the player's sprite should play its `DEAD` animation. 
+- Otherwise, the player should play it's `IDLE` animation, if it's not already playing.
 
 All `AnimatedSprites` in Wolfie2D expose an AnimationManager that can be used to play animations associated with an animated sprite. 
 ```typescript
@@ -94,6 +120,20 @@ class AnimatedSprite extends Sprite {
 }
 ```
 If you want to know more about the different ways you can play animations using the animation manager, I recommend checking out the code in the `AnimationManager` class.
+
+## Part 2 - Updating the HUD
+Inside the HW2Scene, there is a small HUD (head-up-display) used to display statistics about the player.
+* How much health the player has left
+* How much air the player has left
+* The current number of charges the player's laserbeam has
+
+### Part 2.1 - Updating the Healthbar
+Inside the `PlayerController` class, there are two fields used to keep track of the current and maximum health of the player. When either the current or maximum health of the player changes, the HUD in the HW2Scene should be updated to reflect how much health the player has left. 
+
+You should update the player's healthbar using the `handleHealthChange(currentHealth: number, maxHealth: number): void` function inside the HW2Scene class.
+
+### Part 2.2 - Updating the Airbar
+Similarly,
 
 ## Part 3 - Dealing with Collisions
 In the HW2Scene, 3 types of collisions can occur:
@@ -108,15 +148,25 @@ The Mine-Laser collisions have been implemented for you. Getting the Player-Mine
 Inside the HW2Scene class, there is a method called `handleMinePlayerCollisions(): number`. The method checks for collisions between the mines and the player in every frame. It looks something like this:
 
 ```typescript
+/**
+ * Handles collisions between the mines and the player. 
+ * 
+ * @return the number of collisions between mines and the players
+ * 
+ * @remarks 
+ * 
+ * The collision type is an AABB to AABB collision. Collisions between the player and the mines 
+ * need to be checked each frame.
+ * 
+ * If a collision is detected between the player and a mine, the player should be notified
+ * of the collision, and the mine should be made invisible. This returns the mine to it's
+ * respective object-pool.
+ * 
+ * @see HW2Events.PLAYER_ROCK_COLLISION the event to be fired when a collision is detected
+ * between a mine and the player
+ */
 public handleMinePlayerCollisions(): number {
-	let collisions = 0;
-	for (let mine of this.mines) {
-		if (mine.visible && this.player.collisionShape.overlaps(mine.collisionShape)) {
-			this.emitter.fireEvent(HW2Events.PLAYER_MINE_COLLISION, {id: mine.id});
-			collisions += 1;
-		}
-	}	
-	return collisions;
+	// Implementation not shown (see the source code)
 }
 ```
 
@@ -129,6 +179,23 @@ When a mine collides with the player, an event gets fired to the EventQueue to a
 Inside the HW2Scene class, you'll have to do some manual collision detection between the bubbles and the player's sprite. The method is similar to the `handleMinePlayerCollisions()` method.
 
 ```typescript
+/**
+ * Handles collisions between the bubbles and the player.
+ *  
+ * @return the number of collisions between the player and the bubbles in a given frame.
+ * 
+ * @remarks
+ * 
+ * The collision type is AABB to Circle. Detecting these collisions should be done using the 
+ * checkAABBtoCircleCollision() method in the HW3Scene.
+ * 
+ * Collisions between the player and bubbles should be checked during each frame. If a collision 
+ * is detected between the player and a bubble, the player should get back some air (+1) and the
+ * bubble should be made invisible and returned to it's object pool.
+ * 
+ * @see HW2Scene.checkAABBtoCircleCollision the method to be used to check for a collision between
+ * an AABB and a Circle
+ */
 public handleBubblePlayerCollisions(): number {
     // TODO Handle checking for collisions between the bubbles and the player
     return;
@@ -195,7 +262,6 @@ protected spawnBubble(): void {
 	* The bubble should have its visible flag set to `true`
 	* The bubbles position should be set to a random position in the padded region of the viewport
 	* The bubble spawn timer should be reset
-
 
 ### Part 4.2 - Despawning Mines and Bubbles
 Inside the HW2Scene class, there is a method called `handleScreenDespawn(node: CanvasNode)` that you must implement. The method handles despawning any mines and bubbles that have moved beyond the padded region of the viewport, returning them to their object pools.
