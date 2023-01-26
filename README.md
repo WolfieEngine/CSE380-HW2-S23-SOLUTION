@@ -1,6 +1,6 @@
 # Homework 2 - CSE 380 - Spring 2023
 - Professor Richard McKenna - richard@cs.stonybrook.edu
-- Peter Walsh :wink: - peter.t.walsh@stonybrook.edu
+- Peter Walsh - peter.t.walsh@stonybrook.edu
 - Kevin Cai - kevin.cai@stonybrook.edu
 ### Due Date: Friday, February 24, 2022
 
@@ -25,7 +25,7 @@ In this assignment, you will make an infinite scroller game using the Typescript
 ## Getting Started
 First, you'll need to clone the base code in this repository and set up a repository on Github. After you've cloned the base code, run `npm install`. Once the node modules have been installed, run `gulp` to transpile the hw2 base code. 
 
-> If you've never worked with git, Github, or a node project and you don't know how to get set up, please reach out to myself (Peter) or Kevin 🙂  
+> If you've never worked with git, Github, or a node project and you don't know how to get set up, please reach out to myself (Peter) or Kevin 🙂 I don't want anyone to struggle with the setup.
 
 ## Codebase Files
 The structure of the hw2 codebase looks similar to the tree diagram shown below.
@@ -104,13 +104,16 @@ classDiagram
 The HW2Scene is responsible for managing it's object pools, performing basic collision detection, moving the background, keeping track of the player's score, and updating the UI. Playing animations, handling collisions, and updating the state of our actors (player, mines, bubbles, lasers) is delegated to each actors AI component.
 
 ## Part 1 - Playing Animations
-In HW2, there are two animated sprites; the player and the mine. Each animated sprite should respond to various game events by playing its different animations. 
+In HW2, there are two animated sprites. Each animated sprite should respond to various game events by playing its different animations. 
 
-- When the player takes damage from any source (mine or suffocation) the player's sprite should play its `HIT` animation if it's not already playing.
-- When the player's health reaches 0, the player should play its `DEATH` animation. 
-- Otherwise, the player should play it's `IDLE` animation, if it's not already playing.
-- When the mine collides with the player, the mine should play it's `EXPLODING` animation.
-- Otherwise, the mine should play it's `IDLE` animation.
+* The Player
+	- When the player takes damage from any source (mine or suffocation) the player's sprite should play its `HIT` animation if it's not already playing.
+	- When the player's health reaches 0, the player should play its `DEATH` animation. 
+	- Otherwise, the player should play it's `IDLE` animation, if it's not already playing.
+
+* The Mine
+	- When the mine collides with the player, the mine should play it's `EXPLODING` animation.
+	- Otherwise, the mine should play it's `IDLE` animation.
 
 All `AnimatedSprites` in Wolfie2D expose an AnimationManager that can be used to play animations associated with an animated sprite. 
 ```typescript
@@ -572,9 +575,6 @@ float sinwave_laser(vec4 position) {
 > Debugging shader code is tricky because there are no print statements :scream: The best advice I can offer is to try and use different colors to figure out what's going on. 
 
 > In the function I use to generate the linear laser, I make use of a couple built-in glsl functions. You can find a list of all the built-in functions you can use in your shaders [here](https://registry.khronos.org/OpenGL-Refpages/gl4/index.php).
-
-## Bugs
-Where there's code, there's bugs. If you guys think you've run into a bug in the assignment, feel free to reach out myself (Peter) or Kevin.
 
 
 
