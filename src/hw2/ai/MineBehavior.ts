@@ -20,9 +20,6 @@ export default class MineBehavior implements AI {
     private owner: AnimatedSprite;
     private speed: number;
     private direction: Vec2;
-    private receiver: Receiver;
-    
-    private explosionTimer: Timer;
 
     /**
      * @see {AI.initializeAI}
@@ -31,13 +28,6 @@ export default class MineBehavior implements AI {
         this.owner = owner;
         this.direction = Vec2.LEFT;
 
-        this.receiver = new Receiver();
-        this.receiver.subscribe(HW2Events.PLAYER_MINE_COLLISION);
-        this.receiver.subscribe(HW2Events.LASER_MINE_COLLISION);
-        this.receiver.subscribe(HW2Events.MINE_EXPLODED);
-
-        this.explosionTimer = new Timer(2000);
-
         this.activate(options);
     }
     /**
@@ -45,26 +35,12 @@ export default class MineBehavior implements AI {
      */
     activate(options: Record<string, any>): void {
         this.speed = 100;
-        this.owner.animation.play(MineAnimations.IDLE, true);
-        this.receiver.ignoreEvents();
     }
     /**
      * @see {AI.handleEvent}
      */
     handleEvent(event: GameEvent): void { 
         switch(event.type) {
-            case HW2Events.PLAYER_MINE_COLLISION: {
-                this.handlePlayerMineCollision(event);
-                break;
-            }
-            case HW2Events.LASER_MINE_COLLISION: {
-                this.handleLaserMineCollision(event);
-                break;
-            }
-            case HW2Events.MINE_EXPLODED: {
-                this.handleMineExploded(event);
-                break;
-            }
             default: {
                 throw new Error("Unhandled event in MineBehavior! Event type: " + event.type);
             }
@@ -75,9 +51,6 @@ export default class MineBehavior implements AI {
      * @see {Updatable.update}
      */
     update(deltaT: number): void {
-        while (this.receiver.hasNextEvent()) {
-            this.handleEvent(this.receiver.getNextEvent());
-        }
         // If the mine is visible - update the position
         if (this.owner.visible) {
             this.owner.position.add(this.direction.scaled(this.speed * deltaT));
@@ -88,30 +61,10 @@ export default class MineBehavior implements AI {
      * @see {AI.destroy}
      */
     destroy(): void { 
-        this.receiver.destroy();
+        
     }  
     
-    protected handlePlayerMineCollision(event: GameEvent): void {
-        let id = event.data.get("id");
-        if (id === this.owner.id) {
-            this.owner.animation.playIfNotAlready(MineAnimations.EXPLODING, false, HW2Events.MINE_EXPLODED)
-        }
-    }
-
-    protected handleLaserMineCollision(event: GameEvent): void {
-        let id = event.data.get("mineId");
-        if (id === this.owner.id) {
-            this.owner.animation.playIfNotAlready(MineAnimations.EXPLODING, false, HW2Events.MINE_EXPLODED)
-        }
-    }
-
-    protected handleMineExploded(event: GameEvent): void {
-        let id = event.data.get("owner");
-        if (id === this.owner.id) {
-            this.owner.position.copy(Vec2.ZERO);
-            this.owner.visible = false;
-        }
-    }
+    
 }
 
 
