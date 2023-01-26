@@ -463,6 +463,45 @@ protected wrapPlayer(player: CanvasNode, viewportCenter: Vec2, viewportHalfSize:
 ### Part 5.2 - Locking the Player
 In addition to wrapping the player's position, there is another method called `lockPlayer()` that should prevent the player from moving beyond the left or right side of the viewport.  More specifically, the left edge of the player's sprite should not move beyond the left edge of the viewport and the right side of the player's sprite should not move outside the right edge of the viewport.
 ```typescript
+/**
+ * A function for locking the player's coordinates. The player should not be able to move off the 
+ * left or right side of the screen.
+ * 
+ * @param player - the CanvasNode associated with the player
+ * @param viewportCenter - the coordinates of the center of the viewport
+ * @param viewportHalfSize - the halfsize of the viewport 
+ * 
+ * @see {Viewport} for more information about the viewport
+ * 
+ * @remarks
+ * 
+ * More specifically, the left edge of the player's sprite should not move beyond the left edge 
+ * of the viewport and the right side of the player's sprite should not move outside the right 
+ * edge of the viewport.
+ * 
+ * For reference, a visualization of the padded viewport is shown below. The o's represent valid
+ * locations for the player and the X's represent invalid locations for the player.
+ * 	  
+ * 					 X THIS IS OUT OF BOUNDS
+ * 	 _______________________________________________________________________________________________
+ * 	|	 		 	X THIS IS THE PADDED REGION (OFF SCREEN)			|
+ * 	|												|
+ * 	|						X					    	|
+ * 	|		 ______o______________o_________________________________________		|
+ * 	|		|								|		|
+ * 	|		|								|		|	
+ * X	|		|	  THIS IS THE VISIBLE REGION				|		|
+ * 	|		|o			 			  	       o|	X	|   
+ * 	|		|								|		|
+ * 	|	X   	|		o						X		|
+ * 	|		|_____o_______________o_________________________________________|		|
+ * 	|		   										|
+ * 	|		   				X		   				|
+ * 	|_______________________________________________________________________________________________|
+ *
+ * 					X THIS IS OUT OF BOUNDS	
+ * 
+ */
 protected lockPlayer(player: CanvasNode, viewportCenter: Vec2, viewportHalfSize: Vec2): void {
 	// TODO prevents the player from moving off the left/right side of the screen
 }
