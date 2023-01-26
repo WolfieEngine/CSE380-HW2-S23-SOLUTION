@@ -15,7 +15,7 @@ In this assignment, you will make an infinite scroller game using the Typescript
 * Set random numbers/seeds in Wolfie2D
 
 ## Reading Material
-Not to sound like a complete and total nerd, but [Game Programming Patterns](https://gameprogrammingpatterns.com/contents.html) (your textbook) is a great textbook if you're interested in design patterns for games. For this homework assignment, these four chapters are probably the most relevant.
+[Game Programming Patterns](https://gameprogrammingpatterns.com/contents.html) (your textbook) is a great textbook if you're interested in design patterns for games. For this homework assignment, these four chapters are probably the most relevant.
 
 * [Game-loop](https://gameprogrammingpatterns.com/game-loop.html)
 * [Update Method](https://gameprogrammingpatterns.com/update-method.html)
@@ -210,6 +210,23 @@ When a collision is detected between the player and a bubble, two things should 
 When and where you respond to the collision is up to you. Additionally, the collision type between the player and a bubble is an AABB to Circle collision. To check for these collisions, you'll have to implement the static method `checkAABBtoCircleCollision()` method attached to the HW2Scene class.
 
 ```typescript
+/**
+ * This method checks for a collision between an AABB and a circle.
+ * 
+ * @param aabb the AABB
+ * @param circle the Circle
+ * @return true if the AABB is colliding with the circle; false otherwise. 
+ * 
+ * @remarks 
+ * 
+ * Checking for a collision between an AABB and a circle is not trivial. I recommend taking a look 
+ * at the link below. I am aware that there is some sample code there. Personally, I found the diagrams
+ * to be much more intuitve to follow along with than the sample code. 
+ * 
+ * @see AABB for more information about AABBs
+ * @see Circle for more information about Circles
+ * @see MathUtils for more information about MathUtil functions
+ */
 public static checkAABBtoCircleCollision(aabb: AABB, circle: Circle): boolean {
 	// TODO implement AABB to Circle collision detection
 }
@@ -452,6 +469,8 @@ export default abstract class Graphic extends CanvasNode {
 Inside the behavior (AI) for the laserbeam, the color of the laserbeam gradually changes from a redish color to a blueish color. If you successfully pass the color into the fragment shader, you should see the laserbeam fade to a purple/blue ish color.
 
 ### Part 7.2 - Sinwave
+Right now, the submarines laserbeam fires in a straight line. 
+
 In `laser.fshader` I have defined the function `float sinwave_laser(vec4 position)` that computes the alpha value for the color fragment based on a position (presumably from the vertex shader).
 ```c
 /**
@@ -479,7 +498,6 @@ float sinwave_laser(vec4 position) {
     return 1.0;
 }
 ```
-
 
 > Debugging shader code is tricky because there are no print statements :scream: The best advice I can offer is to try and use different colors to figure out what's going on. 
 > In the function I use to generate the linear laser, I make use of a couple built-in glsl functions. You can find a list of all the built-in functions you can use in your shaders [here](https://registry.khronos.org/OpenGL-Refpages/gl4/index.php).
