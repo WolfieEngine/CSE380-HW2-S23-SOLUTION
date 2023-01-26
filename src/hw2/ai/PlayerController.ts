@@ -6,20 +6,16 @@ import Receiver from "../../Wolfie2D/Events/Receiver";
 import Input from "../../Wolfie2D/Input/Input";
 import AnimatedSprite from "../../Wolfie2D/Nodes/Sprites/AnimatedSprite";
 import Timer from "../../Wolfie2D/Timing/Timer";
-import Viewport from "../../Wolfie2D/SceneGraph/Viewport";
 import MathUtils from "../../Wolfie2D/Utils/MathUtils";
 
 import { HW2Events } from "../HW2Events";
 import { HW2Controls } from "../HW2Controls";
-
-import CanvasNode from "../../Wolfie2D/Nodes/CanvasNode";
 
 export const PlayerAnimations = {
     IDLE: "IDLE",
     HIT: "HIT",
     DEATH: "DEATH"
 } as const;
-
 
 /**
  * A class for controlling the player in the HW2Scene.
@@ -64,7 +60,6 @@ export default class PlayerController implements AI {
 
 		this.laserTimer = new Timer(2500, this.handleLaserTimerEnd, false);
 		
-        // TODO Subscribing to events from the scene
 		this.receiver.subscribe(HW2Events.SHOOT_LASER);
 
 		this.activate(options);

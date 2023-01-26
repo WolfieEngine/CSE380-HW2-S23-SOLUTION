@@ -1,11 +1,7 @@
 import AI from "../../Wolfie2D/DataTypes/Interfaces/AI";
 import Vec2 from "../../Wolfie2D/DataTypes/Vec2";
 import GameEvent from "../../Wolfie2D/Events/GameEvent";
-import Receiver from "../../Wolfie2D/Events/Receiver";
-import Graphic from "../../Wolfie2D/Nodes/Graphic";
 import AnimatedSprite from "../../Wolfie2D/Nodes/Sprites/AnimatedSprite";
-import Timer from "../../Wolfie2D/Timing/Timer";
-import { HW2Events } from "../HW2Events";
 
 export const MineAnimations = {
     IDLE: "IDLE",
