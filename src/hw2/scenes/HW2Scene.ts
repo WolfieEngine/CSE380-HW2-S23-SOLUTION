@@ -812,7 +812,6 @@ export default class HW2Scene extends Scene {
 	 * at the link below. I am aware that there is some sample code there. Personally, I found the diagrams
 	 * to be much more intuitve to follow along with than the sample code. 
 	 * 
-	 * @see {@link https://learnopengl.com/In-Practice/2D-Game/Collisions/Collision-Detection#:~:text=Detecting%20collisions%20between%20a%20circle,radius%2C%20we%20have%20a%20collision AABBtoCircle}
 	 * @see AABB for more information about AABBs
 	 * @see Circle for more information about Circles
 	 * @see MathUtils for more information about MathUtil functions
@@ -825,8 +824,7 @@ export default class HW2Scene extends Scene {
     /** Methods for locking and wrapping nodes */
 
     /**
-	 * Function that wraps the player's y-coordinates, if they have moved halfway into the padded
-	 * region of one side of the viewport.
+	 * This function wraps the player around the top/bottom of the viewport.
 	 * 
 	 * @param player - the GameNode associated with the player
 	 * @param viewportCenter - the coordinates of the center of the viewport
@@ -838,7 +836,7 @@ export default class HW2Scene extends Scene {
 	 * to the other side of the screen once the player has ventured too far into the padded region. To do
 	 * this, you will have to:
 	 * 
-	 * 1.) Check if the player has moved halfway out of the visible region in the y-direction
+	 * 1.) Check if the player has moved halfway off the top or bottom of the viewport
 	 * 2.) Update the player's position to the opposite side of the visible region
 	 * 
 	 * @see {Viewport} for more information about the viewport
@@ -874,14 +872,43 @@ export default class HW2Scene extends Scene {
 	}
 
     /**
-	 * Function for locking the player's coordinates. Player should not be able to move off the 
+	 * A function for locking the player's coordinates. The player should not be able to move off the 
 	 * left or right side of the screen.
-	 * 
-	 * @see {Viewport} for more information about the viewport
-	 * 
-	 * @param player - the CanvasNode associated with the player
+     * 
+     * @param player - the CanvasNode associated with the player
 	 * @param viewportCenter - the coordinates of the center of the viewport
 	 * @param viewportHalfSize - the halfsize of the viewport 
+	 * 
+	 * @see {Viewport} for more information about the viewport
+     * 
+     * @remarks
+     * 
+     * More specifically, the left edge of the player's sprite should not move beyond the left edge 
+     * of the viewport and the right side of the player's sprite should not move outside the right 
+     * edge of the viewport.
+     * 
+     * For reference, a visualization of the padded viewport is shown below. The o's represent valid
+     * locations for the player and the X's represent invalid locations for the player.
+     * 	  
+	 * 					 X	 THIS IS OUT OF BOUNDS
+	 * 			 _______________________________________________
+	 * 			|	 THIS IS THE PADDED REGION (OFF SCREEN)		|
+	 * 			|												|
+	 * 			|						X					    |
+	 * 			|		 ______o______________o_________		|
+	 * 			|		|								|		|
+	 * 			|		X								|	X	|
+	 *	 	X	|		|	  THIS IS THE VISIBLE		|		|
+	 * 			|		|o			 REGION			   o|		|   X
+	 * 			|		|								|		|
+	 * 			|	X   |		o						X		|
+	 * 			|		|_____o_______________o_________|		|
+	 * 			|		   										|
+	 * 			|		   				X		   				|
+	 * 			|_______________________________________________|
+	 *
+	 * 							X THIS IS OUT OF BOUNDS	
+	 * 
 	 */
 	protected lockPlayer(player: CanvasNode, viewportCenter: Vec2, viewportHalfSize: Vec2): void {
 		// TODO prevent the player from moving off the left/right side of the screen
