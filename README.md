@@ -75,9 +75,10 @@ The structure of the hw2 codebase looks similar to the tree diagram shown below.
 │   └── main.ts
 └── tsconfig.json
 ```
+Most of the work you'll be doing for homework 2 is in the `hw2` folder. You'll also have to work with the some shader code. The shader files for homework 2 are under `hw2_assets/shaders`.
+
 ## Codebase Structure
 In general, the infinite scroller game for hw2 has a structure similar to the diagram shown below. The scene manages several collections of actors/objects (lasers, bubbles, mines, etc.) and each of those actors has some behavior (AI component) associated with. 
-bbleBehavior "1" --> BubbleActor
 
 ```mermaid
 classDiagram 
@@ -101,8 +102,6 @@ classDiagram
 ```
 
 The HW2Scene is responsible for managing it's object pools, performing basic collision detection, moving the background, keeping track of the player's score, and updating the UI. Playing animations, handling collisions, and updating the state of our actors (player, mines, bubbles, lasers) is delegated to each actors AI component.
-
-Most of the work you'll be doing for homework 2 is in the `hw2` folder. You'll also have to work with the some shader code. The shader files for homework 2 are under `hw2_assets/shaders`.
 
 ## Part 1 - Playing Animations
 In HW2, the player's sprite should respond to various game events by playing its different animations. 
@@ -130,10 +129,79 @@ Inside the HW2Scene, there is a small HUD (head-up-display) used to display stat
 ### Part 2.1 - Updating the Healthbar
 Inside the `PlayerController` class, there are two fields used to keep track of the current and maximum health of the player. When either the current or maximum health of the player changes, the HUD in the HW2Scene should be updated to reflect how much health the player has left. 
 
-You should update the player's healthbar using the `handleHealthChange(currentHealth: number, maxHealth: number): void` function inside the HW2Scene class.
+You should update the player's healthbar using the `handleHealthChange` function inside the HW2Scene class. The method has been implemented for you. All you have to do is call the method.
+
+```typescript
+/**
+ * This method handles updating the player's healthbar in the UI.
+ * 
+ * @param currentHealth the current health of the player
+ * @param maxHealth the maximum amount of health the player can have
+ * 
+ * @remarks
+ * 
+ * The player's healthbar in the UI is updated to reflect the current health
+ * of the player. The method should be called in response to a player health
+ * change event.
+ * 
+ * The player's healthbar has two components:
+ * 
+ * 1.) The actual healthbar (the colored portion)
+ * 2.) The healthbar background
+ * 
+ * The size of the healthbar background should reflect the maximum amount of
+ * health the player can have. The size of the colored healthbar should reflect
+ * the current health of the player.
+ * 
+ * If the players health is less then 1/4 of the player's maximum health, the
+ * healthbar should be colored red. If the players health is less then 3/4 of
+ * the player's maximum health but no less than 1/4e the player's maximum health, 
+ * then the healthbar should appear yellow. If the player's health is greater 
+ * than 3/4 of the player's maximum health, then the healthbar should appear green.
+ * 
+ * @see Color for more information about colors
+ * @see Label for more information about labels 
+ */
+ protected handleHealthChange(currentHealth: number, maxHealth: number): void {
+ 	// Implementation not shown
+ }
+```
 
 ### Part 2.2 - Updating the Airbar
-Similarly,
+Similar to the player's health, there are two fields attached to the PlayerController for the current and maximum air of the player. When either the current or maximum air of the player changes, the HUD in the HW2Scene should be updated to reflect how much air the player has left. 
+
+You should update the player's airbar using the `handleAirChange` function inside the HW2Scene class. The function has been implemented for you. 
+
+```typescript
+/**
+ * This method handles updating the player's air-bar in the UI.
+ * 
+ * @param currentAir the current amount of air the player has
+ * @param maxAir the maximum amount of air the player can have
+ * 
+ * @remarks
+ * 
+ * This method functions very similarly to how handleHealthChange function. The
+ * method should update the UI in response to a player-air-change event to 
+ * reflect the current amount of air the player has left.
+ * 
+ * The air-bar has two components:
+ * 
+ * 1.) The actual air-bar (the colored portion)
+ * 2.) The air-bar background
+ * 
+ * The size of the air-bar background should reflect the maximum amount of
+ * air the player can have. The size of the colored air-bar should reflect
+ * the current amount of air the player has.
+ * 
+ * Unlike the healthbar, the color of the air-bar should be a constant cyan.
+ * 
+ * @see Label for more information about labels
+ */
+protected handleAirChange(currentAir: number, maxAir: number): void {
+	// Implementation not shown
+}
+```
 
 ## Part 3 - Dealing with Collisions
 In the HW2Scene, 3 types of collisions can occur:
