@@ -130,6 +130,7 @@ Inside the HW2Scene, there is a small HUD (head-up-display) used to display stat
 * How much health the player has left
 * How much air the player has left
 * The current number of charges the player's laserbeam has
+It's up to you to propegate changes to the players state (health and air) to the HUD. 
 
 ### Part 2.1 - Updating the Healthbar
 Inside the `PlayerController` class, there are two fields used to keep track of the current and maximum health of the player. When either the current or maximum health of the player changes, the HUD in the HW2Scene should be updated to reflect how much health the player has left. 
@@ -615,7 +616,8 @@ float sinwave_laser(vec4 position) {
 
 > In the function I use to generate the linear laser, I make use of a couple built-in glsl functions. You can find a list of all the built-in functions you can use in your shaders [here](https://registry.khronos.org/OpenGL-Refpages/gl4/index.php).
 
-
+## Submission
+TBD
 
 
 
