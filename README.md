@@ -528,7 +528,7 @@ For reference, here's some more ASCII art repurposed from an old assignment. The
 ```
 
 ## Part 6 - Interfacing with the Playback System
-Wolfie2D supports a basic replay system you can use to replay your games. For the most part, the playback system exists in it's own little bubble. There are three events you can use to interact with the existing playback system (shown below).
+For HW2, you have to use Wolfie2Ds existing playback system to record the HW2Scene. There are three events you can use to interact with the existing playback system (shown below).
 
 ```typescript
 enum GameEventType {
@@ -551,9 +551,11 @@ enum GameEventType {
 }
 ```
 
-For HW2, it's up to you to record the events from the 
+A couple of notes on recording things in HW2:
 
-
+1. The start recording event takes a recording. I recommend using a new `BasicRecording` object. In theory, you could create your own Recording type that implements the Recording interface, but I don't recommend it.
+2. HW2 relies on generating random numbers to spawn the mines and the bubbles. You will need to find a way to save and set the random seed in order for your recording to replay correctly.
+3. When the recording stops playing, the game should transition back to the MainMenu scene.
 
 ## Part 7 - Shaders and WebGL
 For HW2, you're tasked with adding some functionality to the submarines laserbeam. 
