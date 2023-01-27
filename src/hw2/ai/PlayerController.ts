@@ -116,6 +116,7 @@ export default class PlayerController implements AI {
 
         // If the player is out of hp - play the death animation
 		if (this.currentHealth <= this.minHealth) { 
+            this.emitter.fireEvent(HW2Events.DEAD);
             return;
         }
 

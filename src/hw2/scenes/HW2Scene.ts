@@ -111,14 +111,14 @@ export default class HW2Scene extends Scene {
 	/** Scene lifecycle methods */
 
 	/**
-	 * @see Scene.initScene
+	 * @see Scene.initScene()
 	 */
 	public override initScene(options: Record<string, any>): void {
 		this.seed = options.seed === undefined ? RandUtils.randomSeed() : options.seed;
         this.recording = options.recording === undefined ? false : options.recording; 
 	}
 	/**
-	 * @see Scene.loadScene
+	 * @see Scene.loadScene()
 	 */
 	public override loadScene(){
 		// Load in the submarine
@@ -141,7 +141,7 @@ export default class HW2Scene extends Scene {
     	);
 	}
 	/**
-	 * @see Scene.startScene
+	 * @see Scene.startScene()
 	 */
 	public override startScene(){
 		this.worldPadding = new Vec2(64, 64);
@@ -169,8 +169,6 @@ export default class HW2Scene extends Scene {
 
 		// Subscribe to laser events
 		this.receiver.subscribe(HW2Events.FIRING_LASER);
-
-        // TODO Remove the start recording and setting the random seed here!
 	}
 	/**
 	 * @see Scene.updateScene 
@@ -199,7 +197,7 @@ export default class HW2Scene extends Scene {
 		for (let bubble of this.bubbles) if (bubble.visible) this.handleScreenDespawn(bubble);
 	}
     /**
-     * Unload or keep assets from the scene
+     * @see Scene.unloadScene()
      */
     public override unloadScene(): void {
 		// keep all resources.

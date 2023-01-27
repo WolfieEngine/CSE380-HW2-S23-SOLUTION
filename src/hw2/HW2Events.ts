@@ -40,5 +40,7 @@ export const HW2Events = {
     FIRING_LASER: "LASER_FIRING",
 
     LASER_MINE_COLLISION: "LASER_MINE_COLLISION",
+
+    MINE_EXPLODED: "MINE_EXPLODED"
     
 } as const;
