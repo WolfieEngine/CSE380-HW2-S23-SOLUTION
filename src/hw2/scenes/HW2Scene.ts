@@ -753,7 +753,7 @@ export default class HW2Scene extends Scene {
 	 * of the collision, and the mine should be made invisible. This returns the mine to it's
 	 * respective object-pool.
 	 * 
-	 * @see HW2Events.PLAYER_ROCK_COLLISION the event to be fired when a collision is detected
+	 * @see HW2Events.PLAYER_MINE_COLLISION the event to be fired when a collision is detected
 	 * between a mine and the player
 	 */
 	public handleMinePlayerCollisions(): number {
@@ -803,12 +803,6 @@ export default class HW2Scene extends Scene {
 	 * @param aabb the AABB
 	 * @param circle the Circle
 	 * @return true if the AABB is colliding with the circle; false otherwise. 
-	 * 
-	 * @remarks 
-	 * 
-	 * Checking for a collision between an AABB and a circle is not trivial. I recommend taking a look 
-	 * at the link below. I am aware that there is some sample code there. Personally, I found the diagrams
-	 * to be much more intuitve to follow along with than the sample code. 
 	 * 
 	 * @see AABB for more information about AABBs
 	 * @see Circle for more information about Circles
