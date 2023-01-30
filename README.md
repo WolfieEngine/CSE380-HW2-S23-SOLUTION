@@ -618,8 +618,11 @@ float sinwave_laser(vec4 position) {
 
 > In the function I use to generate the linear laser, I make use of a couple built-in glsl functions. You can find a list of all the built-in functions you can use in your shaders [here](https://registry.khronos.org/OpenGL-Refpages/gl4/index.php).
 
+## Final Note
+The assignment is somewhat ambiguious. You may find that you need to change, modify, or add things to the hw2 codebase not mentioned in the description or marked by a TODO to get things working. You're more than welcome to do so.
+
 ## Submission
-TBD
+Whatever you do, just don't submit the `node_modules`.
 
 
 
