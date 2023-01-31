@@ -408,6 +408,8 @@ public handleScreenDespawn(node: CanvasNode): void {
 ## Part 5 - Wrapping and Locking
 Right now, the player can move off the screen as far as they want in any direction. There are various strategies for handling what should happen when the player ventures outside the viewport. For HW2, you're going to wrap and lock the player on the screen.
 
+> Wrapping and locking the player's position needs to be done every frame. I have setup two helper methods for wrapping and locking the the player's position (see 5.1 and 5.2) but it's up to you to figure out where and when to call the functions. 
+
 ### Part 5.1 - Wrapping the Player
 Inside the HW2Scene class, two methods need to be implemented to lock and wrap the player's position. When the player moves halfway off the top or bottom of the screen, the player's sprite should be "wrapped" around to the other side of the screen.
 ```typescript
@@ -507,25 +509,6 @@ protected lockPlayer(player: CanvasNode, viewportCenter: Vec2, viewportHalfSize:
 	// TODO prevents the player from moving off the left/right side of the screen
 }
 ```
-For reference, here's some more ASCII art repurposed from an old assignment. The o's represent valid player locations and the X's represent invalid player locations.
-
-```
-+---------------------------------------------------------------------------------------------------+
-|                                                                                                   | 
-|                                    X   PADDED REGION                                              | 
-|                                                                                                   | 
-|         +-------------------------------------------------------------------------------+         |
-|         |                                      o                                        |         | 
-|         |                                                                               |         | 
-|        X|o                               VISIBLE REGION                                o|         | 
-|         |                                                                               X         | 
-|         |                                      o                                        |         | 
-|         +-------------------------------------------------------------------------------+         |
-|                                                                                                   | 
-|                                    X   PADDED REGION                                              | 
-|                                                                                                   | 
-+---------------------------------------------------------------------------------------------------+
-```
 
 ## Part 6 - Interfacing with the Playback System
 For HW2, you have to use Wolfie2Ds existing playback system to record the HW2Scene. There are three events you can use to interact with the existing playback system (shown below).
@@ -619,7 +602,7 @@ float sinwave_laser(vec4 position) {
 > In the function I use to generate the linear laser, I make use of a couple built-in glsl functions. You can find a list of all the built-in functions you can use in your shaders [here](https://registry.khronos.org/OpenGL-Refpages/gl4/index.php).
 
 ## Final Note
-The assignment is somewhat ambiguious. You may find that you need to change, modify, or add things to the hw2 codebase not mentioned in the description or marked by a TODO to get things working. You're more than welcome to do so.
+The assignment is somewhat ambiguious. You may find that you need to change, modify, or add things to the hw2 codebase not mentioned in the description or marked by a TODO to get things working. You're more than welcome to do so. 
 
 ## Submission
 Whatever you do, just don't submit the `node_modules`.
